@@ -1,0 +1,24 @@
+﻿@startuml
+' Fonte do projeto: docs/documentacao-projeto.md; docs/contratos-operacao.md
+' Fonte conceitual: material da disciplina e sintaxe PlantUML local
+title Diagrama UML de Estados — Ciclo de Vida do Agendamento
+skinparam backgroundColor #FFFFFF
+skinparam shadowing true
+skinparam defaultFontName Arial
+
+[*] --> CRIADO : criar após seleção de proposta
+CRIADO --> CONFIRMADO : confirmar agendamento
+CONFIRMADO --> EM_ATENDIMENTO : iniciar atendimento
+CONFIRMADO --> CANCELADO : cancelar antes da execução
+CONFIRMADO --> NAO_COMPARECEU : registrar ausência
+EM_ATENDIMENTO --> CONCLUIDO : concluir atendimento
+EM_ATENDIMENTO --> CANCELADO : cancelar durante atendimento
+CONCLUIDO --> [*]
+CANCELADO --> [*]
+NAO_COMPARECEU --> [*]
+
+note right of CONCLUIDO
+Somente agendamentos concluídos
+podem receber avaliação do cliente.
+end note
+@enduml

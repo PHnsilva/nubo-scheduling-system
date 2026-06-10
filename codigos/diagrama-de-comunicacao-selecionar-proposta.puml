@@ -1,0 +1,33 @@
+@startuml
+' Fonte do projeto: docs/documentacao-projeto.md; docs/contratos-operacao.md
+' Fonte conceitual: material da disciplina e sintaxe PlantUML local
+title Diagrama UML de Comunicação — UC07 Selecionar Proposta
+skinparam backgroundColor #FFFFFF
+skinparam shadowing true
+skinparam defaultFontName Arial
+left to right direction
+
+object "1: Cliente" as Cliente
+object "2: PropostasPage" as Page
+object "3: PropostaController" as Controller
+object "4: AgendamentoService" as Service
+object "5: SolicitacaoRepository" as SolicitacaoRepo
+object "6: PropostaRepository" as PropostaRepo
+object "7: AgendamentoRepository" as AgendamentoRepo
+object "8: NotificacaoService" as NotificacaoService
+object "9: Servico de Notificacao" as Notificacao
+
+Cliente -- Page : 1. escolhe proposta
+Page -- Controller : 2. POST selecionar-proposta
+Controller -- Service : 3. selecionarProposta()
+Service -- SolicitacaoRepo : 3.1 buscarSolicitacaoDoCliente()
+Service -- PropostaRepo : 3.2 buscarProposta()
+Service -- Service : 3.3 validarRegras()
+Service -- PropostaRepo : 3.4 selecionar/recusar propostas
+Service -- AgendamentoRepo : 3.5 criarAgendamento()
+Service -- NotificacaoService : 3.6 notificarPartes()
+NotificacaoService -- Notificacao : 3.6.1 enviarMensagem()
+Service -- Controller : 4. retornarAgendamento()
+Controller -- Page : 5. 201 Created
+Page -- Cliente : 6. exibir agendamento
+@enduml

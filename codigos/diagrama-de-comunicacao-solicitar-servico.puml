@@ -1,0 +1,32 @@
+﻿@startuml
+' Fonte do projeto: docs/documentacao-projeto.md; docs/contratos-operacao.md
+' Fonte conceitual: material da disciplina e sintaxe PlantUML local
+title Diagrama UML de Comunicação — UC03 Solicitar Serviço
+skinparam backgroundColor #FFFFFF
+skinparam shadowing true
+skinparam defaultFontName Arial
+left to right direction
+
+object "1: Cliente" as Cliente
+object "2: SolicitarServicoPage" as Page
+object "3: SolicitacaoController" as Controller
+object "4: SolicitacaoService" as Service
+object "5: CategoriaRepository" as CategoriaRepo
+object "6: SolicitacaoRepository" as SolicitacaoRepo
+object "7: HistoricoStatusRepository" as HistoricoRepo
+object "8: NotificacaoService" as NotificacaoService
+object "9: Serviço de Notificação" as Notificacao
+
+Cliente -- Page : 1. preenche formulário
+Page -- Controller : 2. POST /api/solicitacoes
+Controller -- Service : 3. solicitarServico(dto)
+Service -- CategoriaRepo : 3.1 validarCategoriaAtiva()
+Service -- Service : 3.2 validarDataFutura()
+Service -- SolicitacaoRepo : 3.3 salvar(solicitacao)
+Service -- HistoricoRepo : 3.4 registrarHistorico()
+Service -- NotificacaoService : 3.5 notificarPrestadores()
+NotificacaoService -- Notificacao : 3.5.1 enviarMensagem()
+Service -- Controller : 4. retornarSolicitacao()
+Controller -- Page : 5. 201 Created
+Page -- Cliente : 6. exibir confirmação
+@enduml

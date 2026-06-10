@@ -1,0 +1,31 @@
+﻿@startuml
+' Fonte do projeto: docs/documentacao-projeto.md; docs/contratos-operacao.md
+' Fonte conceitual: material da disciplina e sintaxe PlantUML local
+title Diagrama UML de Estados — Ciclo de Vida da Solicitação
+skinparam backgroundColor #FFFFFF
+skinparam shadowing true
+skinparam defaultFontName Arial
+
+[*] --> RASCUNHO : criar rascunho
+RASCUNHO --> ABERTA : publicar solicitação
+ABERTA --> COM_PROPOSTAS : receber primeira proposta
+COM_PROPOSTAS --> COM_PROPOSTAS : receber nova proposta
+ABERTA --> CANCELADA : cliente cancela
+COM_PROPOSTAS --> CANCELADA : cliente cancela
+COM_PROPOSTAS --> AGENDADA : cliente seleciona proposta
+AGENDADA --> ENCERRADA : agendamento concluído
+AGENDADA --> CANCELADA : agendamento cancelado
+CANCELADA --> [*]
+ENCERRADA --> [*]
+
+state ABERTA {
+  [*] --> AguardandoPropostas
+}
+
+note right of AGENDADA
+Ao selecionar uma proposta:
+- proposta escolhida vira SELECIONADA;
+- propostas concorrentes viram RECUSADA;
+- agendamento é criado.
+end note
+@enduml
