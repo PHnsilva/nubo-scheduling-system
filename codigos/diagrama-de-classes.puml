@@ -1,0 +1,199 @@
+@startuml
+' Fonte do projeto: README.md; docs/documentacao-projeto.md
+' Fonte conceitual: material da disciplina e sintaxe PlantUML local
+title Diagrama UML de Classes — Modelo de Domínio do Nubo
+left to right direction
+skinparam backgroundColor #FFFFFF
+skinparam classAttributeIconSize 0
+skinparam shadowing true
+skinparam defaultFontName Arial
+skinparam package {
+  BorderColor #2563EB
+  BackgroundColor #F8FBFF
+}
+skinparam class {
+  BorderColor #374151
+  BackgroundColor #F9FAFB
+}
+skinparam enum {
+  BorderColor #F97316
+  BackgroundColor #FFF7ED
+}
+
+package "dominio" {
+  abstract class Usuario {
+    -id: Long
+    -nome: String
+    -email: String
+    -telefone: String
+    -senhaHash: String
+    -perfil: PerfilUsuario
+    -ativo: boolean
+    +autenticar(): boolean
+    +inativar(): void
+  }
+
+  class Cliente {
+    -cpf: String
+    +solicitarServico(): SolicitacaoServico
+    +avaliarAtendimento(): Avaliacao
+  }
+
+  class Prestador {
+    -documento: String
+    -descricao: String
+    -notaMedia: BigDecimal
+    +enviarProposta(): Proposta
+    +concluirAtendimento(): void
+  }
+
+  class Administrador {
+    +gerenciarUsuario(): void
+    +gerenciarCategoria(): void
+  }
+
+  class CategoriaServico {
+    -id: Long
+    -nome: String
+    -descricao: String
+    -ativa: boolean
+  }
+
+  class Endereco {
+    -id: Long
+    -logradouro: String
+    -numero: String
+    -bairro: String
+    -cidade: String
+    -estado: String
+    -cep: String
+  }
+
+  class SolicitacaoServico {
+    -id: Long
+    -descricao: String
+    -dataCriacao: DateTime
+    -dataPreferencial: DateTime
+    -status: SolicitacaoStatus
+    +abrir(): void
+    +receberProposta(p: Proposta): void
+    +selecionarProposta(p: Proposta): Agendamento
+    +cancelar(motivo: String): void
+  }
+
+  class Proposta {
+    -id: Long
+    -valor: Decimal
+    -dataAtendimento: DateTime
+    -observacoes: String
+    -status: PropostaStatus
+    +selecionar(): void
+    +recusar(): void
+    +expirar(): void
+  }
+
+  class Agendamento {
+    -id: Long
+    -dataHora: DateTime
+    -status: AgendamentoStatus
+    -motivoCancelamento: String
+    +confirmar(): void
+    +iniciarAtendimento(): void
+    +cancelar(motivo: String): void
+    +concluir(): void
+  }
+
+  class Notificacao {
+    -id: Long
+    -canal: CanalNotificacao
+    -mensagem: String
+    -dataEnvio: DateTime
+    -lida: boolean
+    +marcarComoLida(): void
+  }
+
+  class Avaliacao {
+    -id: Long
+    -nota: int
+    -comentario: String
+    -dataCriacao: DateTime
+  }
+
+  class HistoricoStatus {
+    -id: Long
+    -statusAnterior: String
+    -statusNovo: String
+    -dataMudanca: DateTime
+    -observacao: String
+  }
+
+  enum PerfilUsuario {
+    CLIENTE
+    PRESTADOR
+    ADMIN
+  }
+
+  enum SolicitacaoStatus {
+    RASCUNHO
+    ABERTA
+    COM_PROPOSTAS
+    AGENDADA
+    CANCELADA
+    ENCERRADA
+  }
+
+  enum PropostaStatus {
+    ENVIADA
+    SELECIONADA
+    RECUSADA
+    EXPIRADA
+    CANCELADA
+  }
+
+  enum AgendamentoStatus {
+    CRIADO
+    CONFIRMADO
+    EM_ATENDIMENTO
+    CONCLUIDO
+    CANCELADO
+    NAO_COMPARECEU
+  }
+
+  enum CanalNotificacao {
+    EMAIL
+    SMS
+    WHATSAPP
+    INTERNA
+  }
+}
+
+Usuario <|-- Cliente
+Usuario <|-- Prestador
+Usuario <|-- Administrador
+
+Cliente "1" --> "0..*" SolicitacaoServico
+Cliente "1" --> "0..*" Avaliacao
+Prestador "1" --> "0..*" Proposta
+Prestador "1" --> "0..*" Agendamento
+Prestador "0..*" -- "0..*" CategoriaServico
+
+SolicitacaoServico "1" --> "1" Cliente
+SolicitacaoServico "1" --> "1" CategoriaServico
+SolicitacaoServico "1" --> "1" Endereco
+SolicitacaoServico "1" --> "0..*" Proposta
+SolicitacaoServico "1" --> "0..1" Agendamento
+SolicitacaoServico "1" --> "0..*" HistoricoStatus
+
+Proposta "1" --> "1" Prestador
+Proposta "1" --> "1" SolicitacaoServico
+Agendamento "1" --> "1" Proposta
+Agendamento "1" --> "0..1" Avaliacao
+Agendamento "1" --> "0..*" HistoricoStatus
+Notificacao "0..*" --> "1" Usuario
+
+Usuario --> PerfilUsuario
+SolicitacaoServico --> SolicitacaoStatus
+Proposta --> PropostaStatus
+Agendamento --> AgendamentoStatus
+Notificacao --> CanalNotificacao
+@enduml

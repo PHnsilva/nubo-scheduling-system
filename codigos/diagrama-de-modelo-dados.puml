@@ -1,0 +1,159 @@
+@startuml
+' Fonte do projeto: README.md; docs/documentacao-projeto.md
+' Fonte conceitual: material da disciplina e sintaxe PlantUML local
+title Diagrama de Modelo de Dados — Esquema Relacional do Nubo
+hide circle
+skinparam backgroundColor #FFFFFF
+skinparam linetype ortho
+skinparam entity {
+  BorderColor #2563EB
+  BackgroundColor #EFF6FF
+}
+skinparam defaultFontName Arial
+
+entity "usuarios" as usuarios {
+  *id : BIGINT <<PK>>
+  --
+  nome : VARCHAR
+  email : VARCHAR <<UNIQUE>>
+  telefone : VARCHAR
+  senha_hash : VARCHAR
+  perfil : VARCHAR
+  ativo : BOOLEAN
+}
+
+entity "clientes" as clientes {
+  *id : BIGINT <<PK, FK>>
+  --
+  cpf : VARCHAR
+}
+
+entity "prestadores" as prestadores {
+  *id : BIGINT <<PK, FK>>
+  --
+  documento : VARCHAR
+  descricao : TEXT
+  nota_media : DECIMAL
+}
+
+entity "administradores" as administradores {
+  *id : BIGINT <<PK, FK>>
+}
+
+entity "categorias_servico" as categorias {
+  *id : BIGINT <<PK>>
+  --
+  nome : VARCHAR
+  descricao : TEXT
+  ativa : BOOLEAN
+}
+
+entity "prestador_categorias" as prestador_categorias {
+  *prestador_id : BIGINT <<PK, FK>>
+  *categoria_id : BIGINT <<PK, FK>>
+}
+
+entity "enderecos" as enderecos {
+  *id : BIGINT <<PK>>
+  --
+  logradouro : VARCHAR
+  numero : VARCHAR
+  bairro : VARCHAR
+  cidade : VARCHAR
+  estado : VARCHAR
+  cep : VARCHAR
+}
+
+entity "solicitacoes_servico" as solicitacoes {
+  *id : BIGINT <<PK>>
+  --
+  cliente_id : BIGINT <<FK>>
+  categoria_id : BIGINT <<FK>>
+  endereco_id : BIGINT <<FK>>
+  descricao : TEXT
+  data_criacao : TIMESTAMP
+  data_preferencial : TIMESTAMP
+  status : VARCHAR
+}
+
+entity "propostas" as propostas {
+  *id : BIGINT <<PK>>
+  --
+  solicitacao_id : BIGINT <<FK>>
+  prestador_id : BIGINT <<FK>>
+  valor : DECIMAL
+  data_atendimento : TIMESTAMP
+  observacoes : TEXT
+  status : VARCHAR
+}
+
+entity "agendamentos" as agendamentos {
+  *id : BIGINT <<PK>>
+  --
+  solicitacao_id : BIGINT <<FK>>
+  proposta_id : BIGINT <<FK>>
+  cliente_id : BIGINT <<FK>>
+  prestador_id : BIGINT <<FK>>
+  data_hora : TIMESTAMP
+  status : VARCHAR
+  motivo_cancelamento : TEXT
+}
+
+entity "notificacoes" as notificacoes {
+  *id : BIGINT <<PK>>
+  --
+  usuario_id : BIGINT <<FK>>
+  canal : VARCHAR
+  mensagem : TEXT
+  data_envio : TIMESTAMP
+  lida : BOOLEAN
+}
+
+entity "avaliacoes" as avaliacoes {
+  *id : BIGINT <<PK>>
+  --
+  agendamento_id : BIGINT <<FK>>
+  cliente_id : BIGINT <<FK>>
+  prestador_id : BIGINT <<FK>>
+  nota : INT
+  comentario : TEXT
+  data_criacao : TIMESTAMP
+}
+
+entity "historico_status" as historico {
+  *id : BIGINT <<PK>>
+  --
+  solicitacao_id : BIGINT <<FK>>
+  agendamento_id : BIGINT <<FK>>
+  status_anterior : VARCHAR
+  status_novo : VARCHAR
+  data_mudanca : TIMESTAMP
+  observacao : TEXT
+}
+
+usuarios ||--|| clientes
+usuarios ||--|| prestadores
+usuarios ||--|| administradores
+
+prestadores ||--o{ prestador_categorias
+categorias ||--o{ prestador_categorias
+
+clientes ||--o{ solicitacoes
+categorias ||--o{ solicitacoes
+enderecos ||--o{ solicitacoes
+
+solicitacoes ||--o{ propostas
+prestadores ||--o{ propostas
+
+solicitacoes ||--o| agendamentos
+propostas ||--o| agendamentos
+clientes ||--o{ agendamentos
+prestadores ||--o{ agendamentos
+
+usuarios ||--o{ notificacoes
+agendamentos ||--o| avaliacoes
+clientes ||--o{ avaliacoes
+prestadores ||--o{ avaliacoes
+solicitacoes ||--o{ historico
+agendamentos ||--o{ historico
+@enduml
