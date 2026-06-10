@@ -1,0 +1,29 @@
+﻿@startuml
+' Fonte do projeto: docs/documentacao-projeto.md; docs/contratos-operacao.md
+' Fonte conceitual: material da disciplina e sintaxe PlantUML local
+title Diagrama UML de Sequência — UC06 Enviar Proposta
+skinparam backgroundColor #FFFFFF
+skinparam shadowing true
+skinparam defaultFontName Arial
+actor "Prestador" as Prestador
+participant "Sistema Nubo" as Sistema
+actor "Cliente" as Cliente
+
+Prestador -> Sistema : consultarSolicitacoesDisponiveis(filtros)
+activate Sistema
+Sistema --> Prestador : listaSolicitacoes
+
+Prestador -> Sistema : enviarProposta(idSolicitacao, valor,\ndataAtendimento, observacoes)
+Sistema -> Sistema : validarPrestadorAtivo()
+Sistema -> Sistema : validarCompatibilidadeCategoria()
+Sistema -> Sistema : validarSolicitacaoAberta()
+Sistema -> Sistema : registrarProposta(status=ENVIADA)
+Sistema -> Sistema : atualizarSolicitacao(COM_PROPOSTAS)
+Sistema -> Cliente : notificarNovaProposta()
+Sistema --> Prestador : propostaEnviada(id, status=ENVIADA)
+deactivate Sistema
+
+note right of Sistema
+Contrato: CO02 — enviarProposta(dadosProposta)
+end note
+@enduml

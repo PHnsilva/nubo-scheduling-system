@@ -1,0 +1,54 @@
+﻿@startuml
+' Fonte do projeto: docs/documentacao-projeto.md; docs/contratos-operacao.md
+' Fonte conceitual: material da disciplina e sintaxe PlantUML local
+title Diagrama UML de Sequência — UC07 Selecionar Proposta
+skinparam backgroundColor #FFFFFF
+skinparam shadowing true
+skinparam defaultFontName Arial
+actor "Cliente" as Cliente
+boundary "PropostasPage" as Page
+control "PropostaController" as Controller
+control "AgendamentoService" as Service
+entity "SolicitacaoRepository" as SolicitacaoRepo
+entity "PropostaRepository" as PropostaRepo
+entity "AgendamentoRepository" as AgendamentoRepo
+control "NotificacaoService" as NotificacaoService
+database "PostgreSQL" as DB
+actor "Servico de Notificacao" as Notificacao
+
+Cliente -> Page : escolherProposta()
+Page -> Controller : POST /api/solicitacoes/{id}/selecionar-proposta
+activate Controller
+Controller -> Service : selecionarProposta(idSolicitacao, idProposta, clienteId)
+activate Service
+
+Service -> SolicitacaoRepo : buscarPorIdECliente(idSolicitacao, clienteId)
+SolicitacaoRepo -> DB : SELECT solicitacao
+DB --> SolicitacaoRepo : solicitacao
+SolicitacaoRepo --> Service : solicitacao
+
+Service -> PropostaRepo : buscarPorId(idProposta)
+PropostaRepo -> DB : SELECT proposta
+DB --> PropostaRepo : proposta
+PropostaRepo --> Service : proposta
+
+Service -> Service : validarPropostaDisponivel()
+Service -> PropostaRepo : marcarSelecionada(proposta)
+PropostaRepo -> DB : UPDATE propostas
+Service -> PropostaRepo : recusarConcorrentes(idSolicitacao)
+PropostaRepo -> DB : UPDATE propostas
+
+Service -> AgendamentoRepo : salvar(agendamento CONFIRMADO)
+AgendamentoRepo -> DB : INSERT agendamentos
+DB --> AgendamentoRepo : idAgendamento
+
+Service -> NotificacaoService : notificarPrestadorECliente(agendamento)
+NotificacaoService -> Notificacao : enviarMensagens()
+Notificacao --> NotificacaoService : ok
+
+Service --> Controller : AgendamentoResponse
+deactivate Service
+Controller --> Page : 201 Created
+deactivate Controller
+Page --> Cliente : exibirAgendamentoConfirmado()
+@enduml

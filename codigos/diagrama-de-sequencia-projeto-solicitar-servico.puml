@@ -1,0 +1,53 @@
+﻿@startuml
+' Fonte do projeto: docs/documentacao-projeto.md; docs/contratos-operacao.md
+' Fonte conceitual: material da disciplina e sintaxe PlantUML local
+title Diagrama UML de Sequência — UC03 Solicitar Serviço
+skinparam backgroundColor #FFFFFF
+skinparam shadowing true
+skinparam defaultFontName Arial
+actor "Cliente" as Cliente
+boundary "SolicitarServicoPage" as Page
+control "SolicitacaoController" as Controller
+control "SolicitacaoService" as Service
+entity "ClienteRepository" as ClienteRepo
+entity "CategoriaRepository" as CategoriaRepo
+entity "SolicitacaoRepository" as SolicitacaoRepo
+entity "HistoricoStatusRepository" as HistoricoRepo
+control "NotificacaoService" as NotificacaoService
+database "PostgreSQL" as DB
+actor "Serviço de Notificação" as Notificacao
+
+Cliente -> Page : preencherFormulario()
+Cliente -> Page : confirmarSolicitacao()
+Page -> Controller : POST /api/solicitacoes
+activate Controller
+Controller -> Service : solicitarServico(dto)
+activate Service
+Service -> ClienteRepo : buscarPorId(clienteId)
+ClienteRepo -> DB : SELECT cliente
+DB --> ClienteRepo : cliente
+ClienteRepo --> Service : cliente
+
+Service -> CategoriaRepo : buscarAtiva(categoriaId)
+CategoriaRepo -> DB : SELECT categoria
+DB --> CategoriaRepo : categoria
+CategoriaRepo --> Service : categoria
+
+Service -> Service : validarDataFutura()
+Service -> Service : criarSolicitacao(status=ABERTA)
+Service -> SolicitacaoRepo : salvar(solicitacao)
+SolicitacaoRepo -> DB : INSERT solicitacoes_servico
+DB --> SolicitacaoRepo : idSolicitacao
+SolicitacaoRepo --> Service : solicitacao
+
+Service -> HistoricoRepo : salvar(statusInicial)
+HistoricoRepo -> DB : INSERT historico_status
+Service -> NotificacaoService : notificarPrestadoresCompativeis(solicitacao)
+NotificacaoService -> Notificacao : enviarMensagem()
+Notificacao --> NotificacaoService : ok
+Service --> Controller : SolicitacaoResponse
+deactivate Service
+Controller --> Page : 201 Created
+deactivate Controller
+Page --> Cliente : exibirSolicitacaoCriada()
+@enduml

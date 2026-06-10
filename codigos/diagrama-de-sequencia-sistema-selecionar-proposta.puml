@@ -1,0 +1,29 @@
+﻿@startuml
+' Fonte do projeto: docs/documentacao-projeto.md; docs/contratos-operacao.md
+' Fonte conceitual: material da disciplina e sintaxe PlantUML local
+title Diagrama UML de Sequência — UC07 Selecionar Proposta
+skinparam backgroundColor #FFFFFF
+skinparam shadowing true
+skinparam defaultFontName Arial
+actor "Cliente" as Cliente
+participant "Sistema Nubo" as Sistema
+actor "Prestador" as Prestador
+actor "Servico de Notificacao" as Notificacao
+
+Cliente -> Sistema : selecionarProposta(idSolicitacao, idProposta)
+activate Sistema
+Sistema -> Sistema : validarPropriedadeDaSolicitacao()
+Sistema -> Sistema : validarPropostaDisponivel()
+Sistema -> Sistema : marcarPropostaSelecionada()
+Sistema -> Sistema : recusarPropostasConcorrentes()
+Sistema -> Sistema : criarAgendamento(status=CONFIRMADO)
+Sistema -> Sistema : atualizarSolicitacao(AGENDADA)
+Sistema -> Notificacao : notificarPrestadorECliente()
+Notificacao --> Prestador : agendamentoConfirmado
+Sistema --> Cliente : agendamentoCriado(id, status=CONFIRMADO)
+deactivate Sistema
+
+note right of Sistema
+Contrato: CO03 - selecionarProposta(idSolicitacao, idProposta)
+end note
+@enduml

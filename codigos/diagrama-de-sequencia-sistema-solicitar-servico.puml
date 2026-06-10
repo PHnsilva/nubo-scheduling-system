@@ -1,0 +1,28 @@
+﻿@startuml
+' Fonte do projeto: docs/documentacao-projeto.md; docs/contratos-operacao.md
+' Fonte conceitual: material da disciplina e sintaxe PlantUML local
+title Diagrama UML de Sequência — UC03 Solicitar Serviço
+skinparam backgroundColor #FFFFFF
+skinparam shadowing true
+skinparam defaultFontName Arial
+actor "Cliente" as Cliente
+participant "Sistema Nubo" as Sistema
+actor "Serviço de Notificação" as Notificacao
+
+Cliente -> Sistema : solicitarServico(categoria, endereco,\ndescricao, dataPreferencial)
+activate Sistema
+Sistema -> Sistema : validarClienteAutenticado()
+Sistema -> Sistema : validarCategoriaAtiva()
+Sistema -> Sistema : validarDataFutura()
+Sistema -> Sistema : criarSolicitacao(status=ABERTA)
+Sistema -> Sistema : registrarHistoricoStatus()
+Sistema -> Notificacao : notificarPrestadoresCompativeis()
+Sistema --> Cliente : solicitacaoCriada(id, status=ABERTA)
+deactivate Sistema
+
+note right of Sistema
+Contrato: CO01 — solicitarServico(dadosSolicitacao)
+Pré-condições: cliente autenticado, categoria ativa e data futura.
+Pós-condições: solicitação aberta e notificação enviada.
+end note
+@enduml
