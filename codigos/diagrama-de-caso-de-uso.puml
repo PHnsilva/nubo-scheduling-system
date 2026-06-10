@@ -1,0 +1,74 @@
+@startuml
+' Fonte do projeto: README.md; docs/documentacao-projeto.md; docs/contratos-operacao.md
+' Fonte conceitual: material da disciplina e sintaxe PlantUML local
+title Diagrama UML de Casos de Uso — Funcionalidades do Nubo
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+skinparam usecase {
+  BackgroundColor #FFF7ED
+  BorderColor #F97316
+}
+skinparam rectangle {
+  BorderColor #2563EB
+  BackgroundColor #F8FBFF
+}
+
+actor "Visitante" as Visitante
+actor "Cliente" as Cliente
+actor "Prestador" as Prestador
+actor "Administrador" as Admin
+actor "Servico de\nNotificacao" as Notificacao
+
+rectangle "Nubo - Plataforma de Servicos Locais" {
+  usecase "UC01\nCadastrar cliente" as UC01
+  usecase "UC02\nCadastrar prestador" as UC02
+  usecase "UC03\nAutenticar usuario" as UC03
+
+  usecase "UC04\nSolicitar servico" as UC04
+  usecase "UC05\nConsultar solicitacoes proprias" as UC05
+  usecase "UC08\nSelecionar proposta" as UC08
+  usecase "UC10\nCancelar agendamento" as UC10
+  usecase "UC12\nAvaliar atendimento" as UC12
+
+  usecase "UC06\nConsultar solicitacoes disponiveis" as UC06
+  usecase "UC07\nEnviar proposta" as UC07
+  usecase "UC09\nConfirmar agendamento" as UC09
+  usecase "UC11\nConcluir atendimento" as UC11
+
+  usecase "UC13\nGerenciar categorias" as UC13
+  usecase "UC14\nGerenciar usuarios" as UC14
+  usecase "UC15\nConsultar relatorios" as UC15
+
+  usecase "UC16\nEnviar notificacao" as UC16
+}
+
+Visitante --> UC01
+Visitante --> UC02
+Visitante --> UC03
+
+Cliente --> UC04
+Cliente --> UC05
+Cliente --> UC08
+Cliente --> UC10
+Cliente --> UC12
+
+Prestador --> UC06
+Prestador --> UC07
+Prestador --> UC09
+Prestador --> UC10
+Prestador --> UC11
+
+Admin --> UC13
+Admin --> UC14
+Admin --> UC15
+
+UC04 ..> UC16 : <<include>>
+UC07 ..> UC16 : <<include>>
+UC08 ..> UC16 : <<include>>
+UC10 ..> UC16 : <<include>>
+UC11 ..> UC16 : <<include>>
+UC12 ..> UC05 : <<extend>>
+
+Notificacao --> UC16
+@enduml
