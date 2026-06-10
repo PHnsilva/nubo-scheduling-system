@@ -1,0 +1,73 @@
+@startuml
+' Fonte do projeto: README.md; docs/documentacao-projeto.md
+' Fonte conceitual: material da disciplina e sintaxe PlantUML local
+title Diagrama UML de Pacotes — Organização dos Módulos do Backend Nubo
+skinparam backgroundColor #FFFFFF
+skinparam packageStyle rectangle
+skinparam shadowing true
+skinparam defaultFontName Arial
+skinparam package {
+  BorderColor #2563EB
+  BackgroundColor #F8FBFF
+}
+left to right direction
+
+package "interface" {
+  [web]
+  [controladores_rest]
+  [dtos]
+}
+
+package "aplicacao" {
+  [servicos]
+  [casos_de_uso]
+  [contratos_de_aplicacao]
+}
+
+package "dominio" {
+  [entidades]
+  [regras]
+  [enumeracoes]
+  [eventos]
+  [interfaces_de_repositorio]
+}
+
+package "infraestrutura" {
+  [persistencia]
+  [seguranca]
+  [configuracao]
+  [integracoes]
+  [notificacoes]
+  [documentacao_da_api]
+}
+
+package "administracao" {
+  [usuarios]
+  [categorias]
+  [relatorios]
+}
+
+[web] --> [controladores_rest]
+[controladores_rest] --> [dtos]
+[controladores_rest] --> [servicos]
+[servicos] --> [casos_de_uso]
+[casos_de_uso] --> [entidades]
+[casos_de_uso] --> [regras]
+[entidades] --> [enumeracoes]
+[servicos] --> [contratos_de_aplicacao]
+[contratos_de_aplicacao] ..> [interfaces_de_repositorio]
+[persistencia] ..> [interfaces_de_repositorio]
+[integracoes] --> [notificacoes]
+[seguranca] ..> [controladores_rest]
+[configuracao] ..> [seguranca]
+[documentacao_da_api] ..> [controladores_rest]
+[usuarios] --> [servicos]
+[categorias] --> [servicos]
+[relatorios] --> [persistencia]
+
+legend right
+  Pacote = agrupamento logico
+  --> dependencia direta
+  ..> dependencia por contrato interno
+endlegend
+@enduml

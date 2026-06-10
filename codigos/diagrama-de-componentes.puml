@@ -1,0 +1,167 @@
+@startuml
+' Fonte do projeto: README.md; docs/documentacao-projeto.md
+' Fonte conceitual: material da disciplina e sintaxe PlantUML local
+title Diagrama UML de Componentes — Arquitetura Geral do Backend Nubo
+left to right direction
+skinparam backgroundColor #FFFFFF
+skinparam componentStyle uml2
+skinparam shadowing true
+skinparam defaultFontName Arial
+skinparam package {
+  BorderColor #2563EB
+  BackgroundColor #F8FBFF
+}
+skinparam component {
+  BorderColor #F97316
+  BackgroundColor #FFF7ED
+}
+skinparam database {
+  BorderColor #2563EB
+  BackgroundColor #EFF6FF
+}
+
+package "Interface" {
+  package "Web" {
+    component "Paginas / Telas" as views
+    component "Cliente HTTP" as http
+  }
+
+  package "DTOs" {
+    component "SolicitacaoDTO" as solicitacaoDto
+    component "PropostaDTO" as propostaDto
+    component "AgendamentoDTO" as agendamentoDto
+    component "UsuarioDTO" as usuarioDto
+  }
+
+  package "Controladores REST" {
+    component "AuthController" as authController
+    component "SolicitacaoController" as solicitacaoController
+    component "PropostaController" as propostaController
+    component "AgendamentoController" as agendamentoController
+    component "AdminController" as adminController
+  }
+}
+
+package "Aplicacao" {
+  package "Contratos de Aplicacao" {
+    interface "ISolicitacaoService" as iSolicitacao
+    interface "IPropostaService" as iProposta
+    interface "IAgendamentoService" as iAgendamento
+    interface "INotificacaoService" as iNotificacao
+  }
+
+  package "Servicos / Casos de Uso" {
+    component "SolicitacaoService" as solicitacaoService
+    component "PropostaService" as propostaService
+    component "AgendamentoService" as agendamentoService
+    component "AvaliacaoService" as avaliacaoService
+    component "AdminService" as adminService
+  }
+}
+
+package "Dominio" {
+  package "Entidades" {
+    component "Usuario" as usuario
+    component "Cliente" as cliente
+    component "Prestador" as prestador
+    component "CategoriaServico" as categoria
+    component "SolicitacaoServico" as solicitacao
+    component "Proposta" as proposta
+    component "Agendamento" as agendamento
+    component "Notificacao" as notificacao
+    component "Avaliacao" as avaliacao
+    component "HistoricoStatus" as historico
+  }
+
+  package "Servicos de Dominio / Politicas" {
+    component "ValidadorDisponibilidade" as validador
+    component "SelecionadorPropostaStrategy" as strategy
+  }
+
+  package "Interfaces de Repositorio" {
+    interface "IUsuarioRepository" as usuarioRepo
+    interface "ISolicitacaoRepository" as solicitacaoRepo
+    interface "IPropostaRepository" as propostaRepo
+    interface "IAgendamentoRepository" as agendamentoRepo
+  }
+}
+
+package "Infraestrutura" {
+  package "Implementacoes de Repositorio" {
+    component "UsuarioRepositoryImpl" as usuarioRepoImpl
+    component "SolicitacaoRepositoryImpl" as solicitacaoRepoImpl
+    component "PropostaRepositoryImpl" as propostaRepoImpl
+    component "AgendamentoRepositoryImpl" as agendamentoRepoImpl
+  }
+
+  package "Suporte Tecnico" {
+    component "Seguranca" as security
+    component "Filtro JWT" as jwt
+    component "Tratamento Global de Erros" as exceptionHandler
+    component "Documentacao da API" as swagger
+    component "Configuracao" as configuracao
+  }
+
+  package "Integracoes" {
+    component "Integracao de Notificacao Externa" as integracaoNotificacao
+  }
+}
+
+database "PostgreSQL" as db
+
+views --> http
+http --> authController : REST / JSON
+http --> solicitacaoController : REST / JSON
+http --> propostaController : REST / JSON
+http --> agendamentoController : REST / JSON
+
+authController --> usuarioDto
+solicitacaoController --> solicitacaoDto
+propostaController --> propostaDto
+agendamentoController --> agendamentoDto
+
+solicitacaoController --> iSolicitacao
+propostaController --> iProposta
+agendamentoController --> iAgendamento
+
+iSolicitacao <|.. solicitacaoService
+iProposta <|.. propostaService
+iAgendamento <|.. agendamentoService
+iNotificacao <|.. integracaoNotificacao
+
+solicitacaoService --> solicitacao
+solicitacaoService --> validador
+propostaService --> proposta
+propostaService --> strategy
+agendamentoService --> agendamento
+avaliacaoService --> avaliacao
+adminService --> usuario
+adminService --> categoria
+
+solicitacaoService --> solicitacaoRepo
+propostaService --> propostaRepo
+agendamentoService --> agendamentoRepo
+authController ..> security
+security --> jwt
+adminController ..> exceptionHandler
+adminController ..> swagger
+swagger ..> configuracao
+
+usuarioRepo <|.. usuarioRepoImpl
+solicitacaoRepo <|.. solicitacaoRepoImpl
+propostaRepo <|.. propostaRepoImpl
+agendamentoRepo <|.. agendamentoRepoImpl
+
+usuarioRepoImpl --> db
+solicitacaoRepoImpl --> db
+propostaRepoImpl --> db
+agendamentoRepoImpl --> db
+
+agendamentoService --> integracaoNotificacao
+
+legend right
+  Linha continua: dependencia ou chamada
+  Linha tracejada: uso tecnico ou configuracao
+  Triangulo: realizacao de interface
+endlegend
+@enduml

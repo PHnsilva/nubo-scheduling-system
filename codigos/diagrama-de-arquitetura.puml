@@ -1,0 +1,99 @@
+@startuml
+' Fonte do projeto: README.md; docs/documentacao-projeto.md
+' Fonte conceitual: material da disciplina e sintaxe PlantUML local
+title Diagrama UML de Componentes — Arquitetura Hexagonal em Monólito Modular
+left to right direction
+skinparam backgroundColor #FFFFFF
+skinparam componentStyle uml2
+skinparam shadowing true
+skinparam defaultFontName Arial
+skinparam package {
+  BorderColor #2563EB
+  BackgroundColor #F8FBFF
+}
+skinparam component {
+  BorderColor #F97316
+  BackgroundColor #FFF7ED
+}
+skinparam interface {
+  BorderColor #374151
+  BackgroundColor #F9FAFB
+}
+skinparam database {
+  BorderColor #2563EB
+  BackgroundColor #EFF6FF
+}
+
+component "Interface Web" as web
+
+package "API Backend Nubo" as backend {
+  component "Controladores REST" as api
+
+  package "Aplicacao" as aplicacao {
+    component "Modulo de Autenticacao" as autenticacao
+    component "Modulo de Solicitacoes" as solicitacoes
+    component "Modulo de Propostas" as propostas
+    component "Modulo de Agendamentos" as agendamentos
+    component "Modulo de Notificacoes" as notificacoes
+    component "Modulo Administrativo" as admin
+    component "Servicos / Casos de Uso" as casosUso
+  }
+
+  package "Dominio" as dominio {
+    component "Entidades" as entidades
+    component "Regras de Negocio" as regras
+    component "Servicos de Dominio / Politicas" as politicas
+    interface "Interfaces de Repositorio" as repositorios
+  }
+
+  package "Infraestrutura" as infraestrutura {
+    component "Persistencia" as persistencia
+    component "Seguranca" as seguranca
+    component "Configuracao" as configuracao
+    component "Documentacao da API" as docsApi
+    component "Integracao de Notificacao Externa" as integracaoNotificacao
+  }
+}
+
+database "Banco de Dados PostgreSQL" as db
+component "Servico de Notificacao Externo" as servicoNotificacao
+
+web --> api : API REST / JSON
+api --> autenticacao
+api --> solicitacoes
+api --> propostas
+api --> agendamentos
+api --> admin
+
+autenticacao --> casosUso
+solicitacoes --> casosUso
+propostas --> casosUso
+agendamentos --> casosUso
+notificacoes --> casosUso
+admin --> casosUso
+
+casosUso --> entidades
+casosUso --> regras
+casosUso --> politicas
+casosUso --> repositorios
+
+persistencia ..|> repositorios
+persistencia --> db
+integracaoNotificacao --> servicoNotificacao
+
+api ..> seguranca
+api ..> docsApi
+infraestrutura ..> configuracao
+notificacoes --> integracaoNotificacao
+
+note right of api
+  Monolito modular:
+  uma unica aplicacao implantavel,
+  organizada em modulos internos.
+end note
+
+note bottom of dominio
+  A Arquitetura Hexagonal protege o dominio
+  de detalhes tecnicos de infraestrutura.
+end note
+@enduml

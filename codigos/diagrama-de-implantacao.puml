@@ -1,0 +1,69 @@
+@startuml
+' Fonte do projeto: README.md; docs/documentacao-projeto.md
+' Fonte conceitual: material da disciplina e sintaxe PlantUML local
+title Diagrama UML de Implantação — Distribuição Física do Monólito Modular Nubo
+left to right direction
+skinparam backgroundColor #FFFFFF
+skinparam shadowing true
+skinparam defaultFontName Arial
+skinparam node {
+  BorderColor #2563EB
+  BackgroundColor #F8FBFF
+}
+skinparam artifact {
+  BorderColor #F97316
+  BackgroundColor #FFF7ED
+}
+skinparam database {
+  BorderColor #2563EB
+  BackgroundColor #EFF6FF
+}
+
+node "Usuarios\nCliente / Prestador / Administrador" as users {
+  node "Navegador Web" as browser {
+    artifact "HTML / CSS / JavaScript" as html
+    artifact "Frontend Web\nReact + TypeScript" as frontend
+    artifact "Sessao segura\nJWT" as jwt
+  }
+}
+
+cloud "Servicos Externos" as external {
+  artifact "Servico de Notificacao\nE-mail / SMS / WhatsApp" as notificacao
+}
+
+node "Servidor da Aplicacao Nubo\nREST API - Monolito Modular" as app {
+  artifact "Artefato da API Nubo" as apiArtifact
+  artifact "Controladores REST\n/api/auth\n/api/solicitacoes\n/api/propostas\n/api/agendamentos\n/api/admin" as controllers
+  artifact "Modulo Usuarios" as usuarios
+  artifact "Modulo Catalogo" as catalogo
+  artifact "Modulo Solicitacoes" as solicitacoes
+  artifact "Modulo Propostas" as propostas
+  artifact "Modulo Agendamentos" as agendamentos
+  artifact "Modulo Avaliacoes" as avaliacoes
+  artifact "Modulo Notificacoes" as notificacoes
+  artifact "Persistencia\nRepositorios / JPA" as persistence
+  artifact "Documentacao da API\nOpenAPI" as swagger
+}
+
+node "Servidor de Banco de Dados" as dbnode {
+  database "PostgreSQL\nnubo_db" as db
+  artifact "usuarios" as t1
+  artifact "clientes" as t2
+  artifact "prestadores" as t3
+  artifact "categorias_servico" as t4
+  artifact "solicitacoes_servico" as t5
+  artifact "propostas" as t6
+  artifact "agendamentos" as t7
+  artifact "avaliacoes" as t8
+  artifact "notificacoes" as t9
+}
+
+users --> app : HTTPS\nREST API\nHTTP/JSON
+app --> dbnode : JDBC
+app --> external : HTTPS\nAPI externa
+
+note bottom
+Nos de implantacao: dispositivo do usuario, servidor da aplicacao,
+servidor de banco de dados e servico externo de notificacao.
+end note
+@enduml
