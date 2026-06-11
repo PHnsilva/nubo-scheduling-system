@@ -367,7 +367,7 @@ Não há testes automatizados executáveis nesta entrega, pois o repositório é
 - [Documentação oficial do Spring Boot](https://spring.io/projects/spring-boot)
 - [Documentação oficial do React](https://react.dev/)
 - [Documentação oficial do PostgreSQL](https://www.postgresql.org/docs/)
-
+- [Projeto PlantUML API — Prof. Dr. João Paulo Aramuni](https://github.com/joaopauloaramuni/projeto-de-software/tree/main/PROJETOS/Python/Projeto%20PlantUML%20API)
 ---
 
 ## 👥 Autores
@@ -394,6 +394,11 @@ Contribuições futuras devem preservar o foco documental e a consistência dos 
 ## 🙏 Agradecimentos
 
 Agradeço à **PUC Minas** e à disciplina **Projeto de Software** pelo direcionamento acadêmico para elaboração dos modelos de domínio, requisitos, arquitetura e projeto do sistema.
+
+Agradeço também ao **Prof. Dr. João Paulo Aramuni** pelo template de documentação e pela ferramenta de apoio à renderização dos diagramas PlantUML.
+
+- GitHub do professor: [joaopauloaramuni](https://github.com/joaopauloaramuni)
+- Ferramenta PlantUML API: [Projeto PlantUML API](https://github.com/joaopauloaramuni/projeto-de-software/tree/main/PROJETOS/Python/Projeto%20PlantUML%20API)
 
 ---
 
