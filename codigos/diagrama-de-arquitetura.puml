@@ -1,10 +1,11 @@
 @startuml
 ' Fonte do projeto: README.md; docs/documentacao-projeto.md
 ' Fonte conceitual: material da disciplina e sintaxe PlantUML local
-title Diagrama UML de Componentes — Arquitetura Hexagonal em Monólito Modular
+title Diagrama UML de Componentes - Arquitetura Hexagonal em Monolito Modular
 left to right direction
 skinparam backgroundColor #FFFFFF
 skinparam componentStyle uml2
+skinparam linetype ortho
 skinparam shadowing true
 skinparam defaultFontName Arial
 skinparam package {
@@ -26,6 +27,14 @@ skinparam database {
 
 component "Interface Web" as web
 
+interface "IAPI REST Nubo" as iApi
+interface "IPersistencia" as iPersistencia
+interface "IRepositorioUsuarios" as iRepoUsuarios
+interface "IRepositorioSolicitacoes" as iRepoSolicitacoes
+interface "IRepositorioPropostas" as iRepoPropostas
+interface "IRepositorioAgendamentos" as iRepoAgendamentos
+interface "IServicoNotificacaoExterna" as iServicoNotificacao
+
 package "API Backend Nubo" as backend {
   component "Controladores REST" as api
 
@@ -43,7 +52,6 @@ package "API Backend Nubo" as backend {
     component "Entidades" as entidades
     component "Regras de Negocio" as regras
     component "Servicos de Dominio / Politicas" as politicas
-    interface "Interfaces de Repositorio" as repositorios
   }
 
   package "Infraestrutura" as infraestrutura {
@@ -58,12 +66,8 @@ package "API Backend Nubo" as backend {
 database "Banco de Dados PostgreSQL" as db
 component "Servico de Notificacao Externo" as servicoNotificacao
 
-web --> api : API REST / JSON
-api --> autenticacao
-api --> solicitacoes
-api --> propostas
-api --> agendamentos
-api --> admin
+api - iApi : fornece
+web ..> iApi : requer
 
 autenticacao --> casosUso
 solicitacoes --> casosUso
@@ -75,16 +79,27 @@ admin --> casosUso
 casosUso --> entidades
 casosUso --> regras
 casosUso --> politicas
-casosUso --> repositorios
 
-persistencia ..|> repositorios
+persistencia - iPersistencia : fornece
+persistencia - iRepoUsuarios : fornece
+persistencia - iRepoSolicitacoes : fornece
+persistencia - iRepoPropostas : fornece
+persistencia - iRepoAgendamentos : fornece
+
+casosUso ..> iPersistencia : requer
+casosUso ..> iRepoUsuarios : requer
+casosUso ..> iRepoSolicitacoes : requer
+casosUso ..> iRepoPropostas : requer
+casosUso ..> iRepoAgendamentos : requer
+
+servicoNotificacao - iServicoNotificacao : fornece
+integracaoNotificacao ..> iServicoNotificacao : requer
+notificacoes ..> iServicoNotificacao : requer
+
 persistencia --> db
-integracaoNotificacao --> servicoNotificacao
-
 api ..> seguranca
 api ..> docsApi
 infraestrutura ..> configuracao
-notificacoes --> integracaoNotificacao
 
 note right of api
   Monolito modular:
@@ -96,4 +111,9 @@ note bottom of dominio
   A Arquitetura Hexagonal protege o dominio
   de detalhes tecnicos de infraestrutura.
 end note
+
+legend right
+  Interface ligada ao componente: fornece
+  Dependencia tracejada para interface: requer
+endlegend
 @enduml
