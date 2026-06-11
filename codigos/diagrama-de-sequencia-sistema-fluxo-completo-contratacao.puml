@@ -1,0 +1,68 @@
+@startuml
+' Fonte do projeto: docs/documentacao-projeto.md; docs/contratos-operacao.md
+' Fonte conceitual: tools/Projeto PlantUML API/plantuml_code/sequence_diagram.puml
+title Diagrama UML de Sequência — Fluxo Completo de Contratação de Serviço
+skinparam backgroundColor #FFFFFF
+skinparam shadowing true
+skinparam defaultFontName Arial
+
+actor "Cliente" as Cliente
+actor "Prestador" as Prestador
+participant "Sistema Nubo" as Sistema
+actor "Serviço de Notificação" as Notificacao
+
+Cliente -> Sistema : solicitarServico(dadosSolicitacao)
+activate Sistema
+Sistema -> Sistema : registrarSolicitacao(ABERTA)
+Sistema -> Notificacao : notificarPrestadoresCompativeis()
+Sistema --> Cliente : solicitacaoCriada()
+deactivate Sistema
+
+Prestador -> Sistema : consultarSolicitacoesDisponiveis()
+activate Sistema
+Sistema --> Prestador : solicitacoesCompativeis
+deactivate Sistema
+
+Prestador -> Sistema : enviarProposta(dadosProposta)
+activate Sistema
+Sistema -> Sistema : registrarProposta(ENVIADA)
+Sistema -> Sistema : atualizarSolicitacao(COM_PROPOSTAS)
+Sistema -> Notificacao : notificarClienteNovaProposta()
+Sistema --> Prestador : propostaEnviada()
+deactivate Sistema
+
+Cliente -> Sistema : visualizarPropostas(idSolicitacao)
+activate Sistema
+Sistema --> Cliente : propostasDisponiveis
+deactivate Sistema
+
+Cliente -> Sistema : selecionarProposta(idProposta)
+activate Sistema
+Sistema -> Sistema : confirmarPropostaSelecionada()
+Sistema -> Sistema : criarAgendamento(CONFIRMADO)
+Sistema -> Notificacao : notificarClienteEPrestador()
+Sistema --> Cliente : agendamentoConfirmado()
+Sistema --> Prestador : propostaSelecionada()
+deactivate Sistema
+
+Prestador -> Sistema : concluirAtendimento(idAgendamento)
+activate Sistema
+Sistema -> Sistema : registrarConclusao(CONCLUIDO)
+Sistema -> Sistema : liberarAvaliacao()
+Sistema -> Notificacao : notificarClienteParaAvaliacao()
+Sistema --> Prestador : atendimentoConcluido()
+deactivate Sistema
+
+Cliente -> Sistema : avaliarAtendimento(nota, comentario)
+activate Sistema
+Sistema -> Sistema : registrarAvaliacao()
+Sistema -> Sistema : encerrarFluxo()
+Sistema --> Cliente : avaliacaoRegistrada()
+deactivate Sistema
+
+note right of Sistema
+Fluxo complementar integrando:
+UC04, UC07, UC08, UC09, UC11, UC12 e UC16.
+O sistema é tratado como caixa-preta.
+end note
+@enduml

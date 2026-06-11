@@ -1,0 +1,24 @@
+@startuml
+' Fonte do projeto: docs/documentacao-projeto.md; docs/contratos-operacao.md
+' Fonte conceitual: tools/Projeto PlantUML API/plantuml_code/state_diagram.puml
+title Diagrama UML de Estados — Ciclo de Vida da Proposta
+skinparam backgroundColor #FFFFFF
+skinparam shadowing true
+skinparam defaultFontName Arial
+
+[*] --> ENVIADA : proposta enviada
+ENVIADA --> SELECIONADA : cliente seleciona proposta
+ENVIADA --> RECUSADA : outra proposta é selecionada
+ENVIADA --> CANCELADA : prestador cancela proposta
+ENVIADA --> EXPIRADA : prazo de validade encerrado
+
+SELECIONADA --> [*]
+RECUSADA --> [*]
+CANCELADA --> [*]
+EXPIRADA --> [*]
+
+note right of EXPIRADA
+Estado possível quando a proposta
+possui prazo de validade.
+end note
+@enduml

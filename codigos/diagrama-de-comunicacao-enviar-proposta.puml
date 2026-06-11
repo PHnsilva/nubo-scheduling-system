@@ -1,0 +1,34 @@
+@startuml
+' Fonte do projeto: docs/documentacao-projeto.md; docs/contratos-operacao.md
+' Fonte conceitual: tools/Projeto PlantUML API/plantuml_code/communication_diagram.puml
+title Diagrama UML de Comunicação — UC07 Enviar Proposta
+skinparam backgroundColor #FFFFFF
+skinparam shadowing true
+skinparam defaultFontName Arial
+left to right direction
+
+object "prestador:Prestador" as Prestador
+object "interface:InterfaceWeb" as Interface
+object "controller:PropostaController" as Controller
+object "service:PropostaService" as Service
+object "solicitacaoRepo:SolicitacaoRepository" as SolicitacaoRepo
+object "prestadorRepo:PrestadorRepository" as PrestadorRepo
+object "propostaRepo:PropostaRepository" as PropostaRepo
+object "historicoRepo:HistoricoStatusRepository" as HistoricoRepo
+object "notificacao:NotificacaoService" as Notificacao
+
+Prestador -- Interface : 1. enviarProposta(dadosProposta)
+Interface -- Controller : 1.1 submeterDados()
+Controller -- Service : 1.2 enviarProposta(dto)
+Service -- PrestadorRepo : 2. validarPrestador(idPrestador)
+Service -- SolicitacaoRepo : 3. buscarSolicitacao(idSolicitacao)
+Service -- Service : 4. validarCompatibilidadeCategoria()
+Service -- Service : 5. criarProposta()
+Service -- PropostaRepo : 6. salvarProposta()
+Service -- SolicitacaoRepo : 7. atualizarStatusSolicitacao()
+Service -- HistoricoRepo : 8. registrarHistorico()
+Service -- Notificacao : 9. notificarCliente()
+Service -- Controller : 10. confirmarEnvio()
+Controller -- Interface : 10.1 retornarSucesso()
+Interface -- Prestador : 10.2 exibirConfirmacao()
+@enduml

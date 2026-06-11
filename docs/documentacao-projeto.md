@@ -94,13 +94,16 @@ O modelo de casos de uso está representado em `codigos/diagrama-de-caso-de-uso.
 
 ### 2.3 Diagrama de Sequência do Sistema e Contrato de Operações
 
-Foram modelados três Diagramas de Sequência do Sistema, representando o Nubo como uma caixa-preta e demonstrando a interação externa entre ator e sistema.
+Foram modelados seis Diagramas de Sequência do Sistema, representando o Nubo como uma caixa-preta e demonstrando a interação externa entre ator e sistema. O diagrama de fluxo completo é complementar e integra os principais casos de uso da contratação de serviço.
 
 | Diagrama | Caso de uso relacionado | Fonte PlantUML | Imagem |
 |---|---|---|---|
 | Diagrama UML de Sequência - UC04 Solicitar Serviço | UC04 | `codigos/diagrama-de-sequencia-sistema-solicitar-servico.puml` | `imagens/diagrama-de-sequencia-sistema-solicitar-servico.png` |
 | Diagrama UML de Sequência - UC07 Enviar Proposta | UC07 | `codigos/diagrama-de-sequencia-sistema-enviar-proposta.puml` | `imagens/diagrama-de-sequencia-sistema-enviar-proposta.png` |
 | Diagrama UML de Sequência - UC08 Selecionar Proposta | UC08 | `codigos/diagrama-de-sequencia-sistema-selecionar-proposta.puml` | `imagens/diagrama-de-sequencia-sistema-selecionar-proposta.png` |
+| Diagrama UML de Sequência - UC10 Cancelar Agendamento | UC10 | `codigos/diagrama-de-sequencia-sistema-cancelar-agendamento.puml` | `imagens/diagrama-de-sequencia-sistema-cancelar-agendamento.png` |
+| Diagrama UML de Sequência - UC11 Concluir Atendimento | UC11 | `codigos/diagrama-de-sequencia-sistema-concluir-atendimento.puml` | `imagens/diagrama-de-sequencia-sistema-concluir-atendimento.png` |
+| Diagrama UML de Sequência - Fluxo Completo de Contratação de Serviço | UC04, UC07, UC08, UC09, UC11, UC12, UC16 | `codigos/diagrama-de-sequencia-sistema-fluxo-completo-contratacao.puml` | `imagens/diagrama-de-sequencia-sistema-fluxo-completo-contratacao.png` |
 
 Os contratos também são mantidos como arquivo de apoio em `docs/contratos-operacao.md`. O conteúdo consolidado dos contratos é apresentado a seguir para atender à estrutura do documento de projeto.
 
@@ -219,6 +222,10 @@ Arquivos:
 - `imagens/diagrama-de-sequencia-projeto-solicitar-servico.png`
 - `codigos/diagrama-de-sequencia-projeto-selecionar-proposta.puml`
 - `imagens/diagrama-de-sequencia-projeto-selecionar-proposta.png`
+- `codigos/diagrama-de-sequencia-projeto-enviar-proposta.puml`
+- `imagens/diagrama-de-sequencia-projeto-enviar-proposta.png`
+- `codigos/diagrama-de-sequencia-projeto-cancelar-agendamento.puml`
+- `imagens/diagrama-de-sequencia-projeto-cancelar-agendamento.png`
 
 ### 3.5 Diagramas de Comunicação
 
@@ -230,10 +237,12 @@ Arquivos:
 - `imagens/diagrama-de-comunicacao-solicitar-servico.png`
 - `codigos/diagrama-de-comunicacao-selecionar-proposta.puml`
 - `imagens/diagrama-de-comunicacao-selecionar-proposta.png`
+- `codigos/diagrama-de-comunicacao-enviar-proposta.puml`
+- `imagens/diagrama-de-comunicacao-enviar-proposta.png`
 
 ### 3.6 Diagramas de Estados
 
-Os diagramas de estados representam o ciclo de vida de solicitações e agendamentos. Eles demonstram transições como abertura, recebimento de propostas, agendamento, cancelamento, conclusão e encerramento.
+Os diagramas de estados representam o ciclo de vida de solicitações, propostas e agendamentos. Eles demonstram transições como abertura, recebimento de propostas, seleção, recusa, agendamento, cancelamento, conclusão e encerramento.
 
 Arquivos:
 
@@ -241,6 +250,8 @@ Arquivos:
 - `imagens/diagrama-de-estados-solicitacao.png`
 - `codigos/diagrama-de-estados-agendamento.puml`
 - `imagens/diagrama-de-estados-agendamento.png`
+- `codigos/diagrama-de-estados-proposta.puml`
+- `imagens/diagrama-de-estados-proposta.png`
 
 ## 4. Modelos de Dados
 

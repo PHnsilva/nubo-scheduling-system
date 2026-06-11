@@ -1,0 +1,32 @@
+@startuml
+' Fonte do projeto: docs/documentacao-projeto.md; docs/contratos-operacao.md
+' Fonte conceitual: tools/Projeto PlantUML API/plantuml_code/sequence_diagram.puml
+title Diagrama UML de Sequência — UC11 Concluir Atendimento
+skinparam backgroundColor #FFFFFF
+skinparam shadowing true
+skinparam defaultFontName Arial
+
+actor "Prestador" as Prestador
+participant "Sistema Nubo" as Sistema
+actor "Cliente" as Cliente
+actor "Serviço de Notificação" as Notificacao
+
+Prestador -> Sistema : concluirAtendimento(idAgendamento)
+activate Sistema
+Sistema -> Sistema : validarResponsabilidadeDoPrestador()
+Sistema -> Sistema : validarStatusAtual()
+Sistema -> Sistema : atualizarAgendamento(CONCLUIDO)
+Sistema -> Sistema : atualizarSolicitacao(ENCERRADA)
+Sistema -> Sistema : registrarHistoricoStatus()
+Sistema -> Notificacao : notificarClienteParaAvaliacao()
+Sistema -> Sistema : liberarAvaliacao()
+Sistema --> Prestador : atendimentoConcluido(status=CONCLUIDO)
+Sistema --> Cliente : avaliacaoDisponivel()
+deactivate Sistema
+
+note right of Sistema
+Contrato: CO05 — concluirAtendimento(idAgendamento)
+Pré-condições: prestador responsável e agendamento confirmado ou em atendimento.
+Pós-condições: atendimento concluído e avaliação liberada.
+end note
+@enduml

@@ -1,0 +1,61 @@
+@startuml
+' Fonte do projeto: docs/documentacao-projeto.md; docs/contratos-operacao.md
+' Fonte conceitual: tools/Projeto PlantUML API/plantuml_code/sequence_diagram.puml
+title Diagrama UML de Sequência — Projeto UC07 Enviar Proposta
+skinparam backgroundColor #FFFFFF
+skinparam shadowing true
+skinparam defaultFontName Arial
+
+actor "Prestador" as Prestador
+boundary "Interface Web" as Web
+control "PropostaController" as Controller
+control "PropostaService" as Service
+entity "SolicitacaoRepository" as SolicitacaoRepo
+entity "PrestadorRepository" as PrestadorRepo
+entity "PropostaRepository" as PropostaRepo
+entity "HistoricoStatusRepository" as HistoricoRepo
+control "NotificacaoService" as NotificacaoService
+database "Banco de Dados PostgreSQL" as DB
+actor "Serviço de Notificação Externo" as NotificacaoExterna
+
+Prestador -> Web : preencherDadosProposta()
+Prestador -> Web : enviarProposta()
+Web -> Controller : POST /api/propostas
+activate Controller
+Controller -> Service : enviarProposta(dto, idPrestador)
+activate Service
+
+Service -> PrestadorRepo : buscarPrestadorAtivo(idPrestador)
+PrestadorRepo -> DB : SELECT prestador
+DB --> PrestadorRepo : prestador
+PrestadorRepo --> Service : prestador
+
+Service -> SolicitacaoRepo : buscarPorId(dto.idSolicitacao)
+SolicitacaoRepo -> DB : SELECT solicitacao
+DB --> SolicitacaoRepo : solicitacao
+SolicitacaoRepo --> Service : solicitacao
+
+Service -> Service : validarStatusSolicitacao()
+Service -> Service : validarCompatibilidadeCategoria()
+Service -> Service : criarProposta(status=ENVIADA)
+
+Service -> PropostaRepo : salvar(proposta)
+PropostaRepo -> DB : INSERT propostas
+DB --> PropostaRepo : idProposta
+PropostaRepo --> Service : proposta
+
+Service -> SolicitacaoRepo : atualizarStatus(COM_PROPOSTAS)
+SolicitacaoRepo -> DB : UPDATE solicitacoes_servico
+Service -> HistoricoRepo : registrarHistorico(COM_PROPOSTAS)
+HistoricoRepo -> DB : INSERT historico_status
+
+Service -> NotificacaoService : notificarClienteNovaProposta(proposta)
+NotificacaoService -> NotificacaoExterna : enviarMensagem()
+NotificacaoExterna --> NotificacaoService : ok
+
+Service --> Controller : PropostaResponse
+deactivate Service
+Controller --> Web : 201 Created
+deactivate Controller
+Web --> Prestador : exibirPropostaEnviada()
+@enduml

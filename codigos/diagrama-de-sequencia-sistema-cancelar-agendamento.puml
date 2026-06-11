@@ -1,0 +1,40 @@
+@startuml
+' Fonte do projeto: docs/documentacao-projeto.md; docs/contratos-operacao.md
+' Fonte conceitual: tools/Projeto PlantUML API/plantuml_code/sequence_diagram.puml
+title Diagrama UML de Sequência — UC10 Cancelar Agendamento
+skinparam backgroundColor #FFFFFF
+skinparam shadowing true
+skinparam defaultFontName Arial
+
+actor "Cliente" as Cliente
+actor "Prestador" as Prestador
+participant "Sistema Nubo" as Sistema
+actor "Serviço de Notificação" as Notificacao
+
+alt Cancelamento solicitado pelo Cliente
+  Cliente -> Sistema : cancelarAgendamento(idAgendamento, motivo)
+else Cancelamento solicitado pelo Prestador
+  Prestador -> Sistema : cancelarAgendamento(idAgendamento, motivo)
+end
+
+activate Sistema
+Sistema -> Sistema : validarParticipanteDoAgendamento()
+Sistema -> Sistema : validarStatusAtual()
+Sistema -> Sistema : registrarMotivoCancelamento()
+Sistema -> Sistema : atualizarAgendamento(CANCELADO)
+Sistema -> Sistema : registrarHistoricoStatus()
+Sistema -> Notificacao : notificarOutraParte()
+
+alt Solicitante é Cliente
+  Sistema --> Cliente : cancelamentoConfirmado(status=CANCELADO)
+else Solicitante é Prestador
+  Sistema --> Prestador : cancelamentoConfirmado(status=CANCELADO)
+end
+deactivate Sistema
+
+note right of Sistema
+Contrato: CO04 — cancelarAgendamento(idAgendamento, motivo)
+Pré-condições: participante autenticado e agendamento não concluído.
+Pós-condições: agendamento cancelado, motivo e histórico registrados.
+end note
+@enduml

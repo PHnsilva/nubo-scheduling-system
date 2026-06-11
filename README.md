@@ -184,6 +184,16 @@ A arquitetura foi escolhida considerando a evolução esperada do produto. Os fl
 - [Diagramas de Comunicação](./codigos)
 - [Diagramas de Estados](./codigos)
 
+Diagramas comportamentais complementares:
+
+- [SSD UC10 - Cancelar Agendamento](./codigos/diagrama-de-sequencia-sistema-cancelar-agendamento.puml)
+- [SSD UC11 - Concluir Atendimento](./codigos/diagrama-de-sequencia-sistema-concluir-atendimento.puml)
+- [SSD - Fluxo Completo de Contratação](./codigos/diagrama-de-sequencia-sistema-fluxo-completo-contratacao.puml)
+- [Sequência de Projeto - Enviar Proposta](./codigos/diagrama-de-sequencia-projeto-enviar-proposta.puml)
+- [Sequência de Projeto - Cancelar Agendamento](./codigos/diagrama-de-sequencia-projeto-cancelar-agendamento.puml)
+- [Comunicação - Enviar Proposta](./codigos/diagrama-de-comunicacao-enviar-proposta.puml)
+- [Estados - Proposta](./codigos/diagrama-de-estados-proposta.puml)
+
 ---
 
 ## 🔧 Instalação e Execução

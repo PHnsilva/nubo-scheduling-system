@@ -1,0 +1,54 @@
+@startuml
+' Fonte do projeto: docs/documentacao-projeto.md; docs/contratos-operacao.md
+' Fonte conceitual: tools/Projeto PlantUML API/plantuml_code/sequence_diagram.puml
+title Diagrama UML de Sequência — Projeto UC10 Cancelar Agendamento
+skinparam backgroundColor #FFFFFF
+skinparam shadowing true
+skinparam defaultFontName Arial
+
+actor "Cliente/Prestador" as Ator
+boundary "Interface Web" as Web
+control "AgendamentoController" as Controller
+control "AgendamentoService" as Service
+entity "AgendamentoRepository" as AgendamentoRepo
+entity "SolicitacaoRepository" as SolicitacaoRepo
+entity "HistoricoStatusRepository" as HistoricoRepo
+control "NotificacaoService" as NotificacaoService
+database "Banco de Dados PostgreSQL" as DB
+actor "Serviço de Notificação Externo" as NotificacaoExterna
+
+Ator -> Web : solicitarCancelamento(motivo)
+Web -> Controller : PATCH /api/agendamentos/{id}/cancelar
+activate Controller
+Controller -> Service : cancelarAgendamento(idAgendamento, motivo, usuarioId)
+activate Service
+
+Service -> AgendamentoRepo : buscarPorId(idAgendamento)
+AgendamentoRepo -> DB : SELECT agendamento
+DB --> AgendamentoRepo : agendamento
+AgendamentoRepo --> Service : agendamento
+
+Service -> Service : validarParticipacao(usuarioId, agendamento)
+Service -> Service : validarCancelamentoPermitido()
+Service -> Service : definirStatus(CANCELADO)
+Service -> Service : registrarMotivoCancelamento(motivo)
+
+Service -> AgendamentoRepo : salvar(agendamento)
+AgendamentoRepo -> DB : UPDATE agendamentos
+
+Service -> SolicitacaoRepo : atualizarSolicitacaoRelacionada()
+SolicitacaoRepo -> DB : UPDATE solicitacoes_servico
+
+Service -> HistoricoRepo : registrarHistorico(CANCELADO)
+HistoricoRepo -> DB : INSERT historico_status
+
+Service -> NotificacaoService : notificarParteAfetada(agendamento)
+NotificacaoService -> NotificacaoExterna : enviarMensagem()
+NotificacaoExterna --> NotificacaoService : ok
+
+Service --> Controller : CancelamentoResponse
+deactivate Service
+Controller --> Web : 200 OK
+deactivate Controller
+Web --> Ator : exibirCancelamentoConfirmado()
+@enduml
