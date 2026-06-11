@@ -8,6 +8,7 @@ skinparam componentStyle uml2
 skinparam linetype ortho
 skinparam nodesep 70
 skinparam ranksep 80
+skinparam packageStyle rectangle
 skinparam shadowing true
 skinparam defaultFontName Arial
 skinparam package {
@@ -23,68 +24,73 @@ skinparam database {
   BackgroundColor #EFF6FF
 }
 
-package "Interface / Entrada" {
-  component "Controladores REST" as controladores
+package "Interface / Entrada" as entrada {
+  component "Controlador de\nAutenticacao" as authController
+  component "Controlador de\nSolicitacoes" as solicitacaoController
+  component "Controlador de\nPropostas" as propostaController
+  component "Controlador de\nAgendamentos" as agendamentoController
+  component "Controlador\nAdministrativo" as adminController
 }
 
-package "Aplicacao" {
-  component "Servicos de Aplicacao\n(casos de uso)" as servicosAplicacao
+package "Aplicacao" as app {
+  component "Servico de\nAutenticacao" as authService
+  component "Servico de\nSolicitacoes" as solicitacaoService
+  component "Servico de\nPropostas" as propostaService
+  component "Servico de\nAgendamentos" as agendamentoService
+  component "Servico de\nNotificacoes" as notificacaoService
+  component "Servico\nAdministrativo" as adminService
 }
 
-package "Dominio" {
-  component "Entidades,\nRegras de Negocio\ne Politicas" as dominio
+package "Dominio" as dominioPkg {
+  component "Entidades de\nDominio" as entidades
+  component "Politicas de\nSolicitacao" as politicasSolicitacao
+  component "Politicas de\nAgendamento" as politicasAgendamento
 }
 
-package "Infraestrutura" {
-  component "Implementacoes de\nRepositorio" as repositorios
+package "Infraestrutura" as infra {
+  component "Repositorios JPA" as repositoriosJpa
+  component "Persistencia\nPostgreSQL" as persistencia
   component "Integracao de\nNotificacao Externa" as integracaoNotificacao
 }
 
-package "Sistemas Externos" {
-  database "PostgreSQL" as db
+package "Sistemas Externos" as externos {
+  database "Banco de Dados\nPostgreSQL" as db
   component "Servico de\nNotificacao Externo" as servicoNotificacao
 }
 
-controladores -(0- servicosAplicacao
-servicosAplicacao --> dominio : usa
-servicosAplicacao -(0- repositorios
-servicosAplicacao -(0- integracaoNotificacao
+authController -(0- authService
+solicitacaoController -(0- solicitacaoService
+propostaController -(0- propostaService
+agendamentoController -(0- agendamentoService
+adminController -(0- adminService
+adminController -(0- notificacaoService
 
-repositorios --> db : persiste
+app --> dominioPkg : usa dominio
+app -(0- repositoriosJpa
+
+solicitacaoService -(0- notificacaoService
+propostaService -(0- notificacaoService
+agendamentoService -(0- notificacaoService
+notificacaoService -(0- integracaoNotificacao
+
+repositoriosJpa -(0- persistencia
+persistencia --> db : persiste
 integracaoNotificacao -(0- servicoNotificacao
 
-note bottom of servicosAplicacao
-  fornece:
-  ISolicitacoes, IPropostas,
-  IAgendamentos, INotificacoes
-
-  requer:
-  IRepositorioUsuarios,
-  IRepositorioSolicitacoes,
-  IRepositorioPropostas,
-  IRepositorioAgendamentos,
-  IServicoNotificacao
-end note
-
-note bottom of repositorios
-  fornece:
-  IRepositorioUsuarios,
-  IRepositorioSolicitacoes,
-  IRepositorioPropostas,
-  IRepositorioAgendamentos
-end note
-
-note bottom of integracaoNotificacao
-  fornece:
-  IServicoNotificacao
-end note
-
-note bottom of dominio
+note bottom of dominioPkg
   O dominio nao depende da infraestrutura.
 end note
 
 legend bottom
-  Conector bola-soquete: componente da esquerda requer interface fornecida pelo componente da direita.
-  Circulo = interface fornecida; meia-lua = interface requerida.
+  Servicos de aplicacao fornecem:
+  IAutenticacao, ISolicitacoes, IPropostas, IAgendamentos, INotificacoes, IAdministracao.
+
+  Servicos de aplicacao requerem:
+  IRepositorioUsuarios, IRepositorioSolicitacoes, IRepositorioPropostas,
+  IRepositorioAgendamentos, IRepositorioAvaliacoes, IRepositorioHistoricoStatus,
+  IServicoNotificacao.
+
+  Repositorios JPA fornecem as interfaces de repositorio.
+  Os componentes representam modulos internos de um unico backend em monolito modular.
 endlegend
 @enduml

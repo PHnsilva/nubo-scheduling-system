@@ -50,8 +50,4 @@ note bottom of backend
   O backend permanece uma unica aplicacao implantavel.
 end note
 
-legend bottom
-  Conector bola-soquete: componente da esquerda requer interface fornecida pelo componente da direita.
-  Circulo = interface fornecida; meia-lua = interface requerida.
-endlegend
 @enduml
