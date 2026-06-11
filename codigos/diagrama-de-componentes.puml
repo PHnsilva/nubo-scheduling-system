@@ -1,11 +1,13 @@
 @startuml
 ' Fonte do projeto: README.md; docs/documentacao-projeto.md
-' Fonte conceitual: material da disciplina e sintaxe PlantUML local
-title Diagrama UML de Componentes - Arquitetura Geral do Backend Nubo
+' Fonte conceitual: tools/Projeto PlantUML API/plantuml_code/component_diagram.puml
+title Diagrama UML de Componentes - Backend Nubo
 left to right direction
 skinparam backgroundColor #FFFFFF
 skinparam componentStyle uml2
 skinparam linetype ortho
+skinparam nodesep 70
+skinparam ranksep 80
 skinparam shadowing true
 skinparam defaultFontName Arial
 skinparam package {
@@ -16,173 +18,73 @@ skinparam component {
   BorderColor #F97316
   BackgroundColor #FFF7ED
 }
-skinparam interface {
-  BorderColor #374151
-  BackgroundColor #F9FAFB
-}
 skinparam database {
   BorderColor #2563EB
   BackgroundColor #EFF6FF
 }
 
-package "Interface" {
-  package "Web" {
-    component "Paginas / Telas" as views
-    component "Cliente HTTP" as http
-  }
-
-  package "DTOs" {
-    component "SolicitacaoDTO" as solicitacaoDto
-    component "PropostaDTO" as propostaDto
-    component "AgendamentoDTO" as agendamentoDto
-    component "UsuarioDTO" as usuarioDto
-  }
-
-  package "Controladores REST" {
-    component "AuthController" as authController
-    component "SolicitacaoController" as solicitacaoController
-    component "PropostaController" as propostaController
-    component "AgendamentoController" as agendamentoController
-    component "AdminController" as adminController
-  }
+package "Interface / Entrada" {
+  component "Controladores REST" as controladores
 }
 
 package "Aplicacao" {
-  package "Contratos de Aplicacao" {
-    interface "IAutenticacao" as iAutenticacao
-    interface "ISolicitacoes" as iSolicitacoes
-    interface "IPropostas" as iPropostas
-    interface "IAgendamentos" as iAgendamentos
-    interface "INotificacoes" as iNotificacoes
-    interface "IAdministracao" as iAdministracao
-  }
-
-  package "Servicos / Casos de Uso" {
-    component "AutenticacaoService" as autenticacaoService
-    component "SolicitacaoService" as solicitacaoService
-    component "PropostaService" as propostaService
-    component "AgendamentoService" as agendamentoService
-    component "NotificacaoService" as notificacaoService
-    component "AvaliacaoService" as avaliacaoService
-    component "AdminService" as adminService
-  }
+  component "Servicos de Aplicacao\n(casos de uso)" as servicosAplicacao
 }
 
 package "Dominio" {
-  package "Entidades" {
-    component "Usuario" as usuario
-    component "Cliente" as cliente
-    component "Prestador" as prestador
-    component "CategoriaServico" as categoria
-    component "SolicitacaoServico" as solicitacao
-    component "Proposta" as proposta
-    component "Agendamento" as agendamento
-    component "Notificacao" as notificacao
-    component "Avaliacao" as avaliacao
-    component "HistoricoStatus" as historico
-  }
-
-  package "Servicos de Dominio / Politicas" {
-    component "ValidadorDisponibilidade" as validador
-    component "SelecionadorPropostaStrategy" as strategy
-  }
-
-  package "Interfaces de Repositorio" {
-    interface "IRepositorioUsuarios" as iRepoUsuarios
-    interface "IRepositorioSolicitacoes" as iRepoSolicitacoes
-    interface "IRepositorioPropostas" as iRepoPropostas
-    interface "IRepositorioAgendamentos" as iRepoAgendamentos
-  }
+  component "Entidades,\nRegras de Negocio\ne Politicas" as dominio
 }
 
 package "Infraestrutura" {
-  package "Implementacoes de Repositorio" {
-    component "UsuarioRepositoryImpl" as usuarioRepoImpl
-    component "SolicitacaoRepositoryImpl" as solicitacaoRepoImpl
-    component "PropostaRepositoryImpl" as propostaRepoImpl
-    component "AgendamentoRepositoryImpl" as agendamentoRepoImpl
-  }
-
-  package "Suporte Tecnico" {
-    component "Seguranca" as security
-    component "Filtro JWT" as jwt
-    component "Tratamento Global de Erros" as exceptionHandler
-    component "Documentacao da API" as swagger
-    component "Configuracao" as configuracao
-  }
-
-  package "Integracoes" {
-    interface "IServicoNotificacaoExterna" as iServicoNotificacao
-    component "Integracao de Notificacao Externa" as integracaoNotificacao
-  }
+  component "Implementacoes de\nRepositorio" as repositorios
+  component "Integracao de\nNotificacao Externa" as integracaoNotificacao
 }
 
-database "PostgreSQL" as db
+package "Sistemas Externos" {
+  database "PostgreSQL" as db
+  component "Servico de\nNotificacao Externo" as servicoNotificacao
+}
 
-views --> http
-http --> authController : REST / JSON
-http --> solicitacaoController : REST / JSON
-http --> propostaController : REST / JSON
-http --> agendamentoController : REST / JSON
+controladores -(0- servicosAplicacao
+servicosAplicacao --> dominio : usa
+servicosAplicacao -(0- repositorios
+servicosAplicacao -(0- integracaoNotificacao
 
-authController --> usuarioDto
-solicitacaoController --> solicitacaoDto
-propostaController --> propostaDto
-agendamentoController --> agendamentoDto
+repositorios --> db : persiste
+integracaoNotificacao -(0- servicoNotificacao
 
-autenticacaoService - iAutenticacao : fornece
-solicitacaoService - iSolicitacoes : fornece
-propostaService - iPropostas : fornece
-agendamentoService - iAgendamentos : fornece
-notificacaoService - iNotificacoes : fornece
-adminService - iAdministracao : fornece
+note bottom of servicosAplicacao
+  fornece:
+  ISolicitacoes, IPropostas,
+  IAgendamentos, INotificacoes
 
-authController ..> iAutenticacao : requer
-solicitacaoController ..> iSolicitacoes : requer
-propostaController ..> iPropostas : requer
-agendamentoController ..> iAgendamentos : requer
-adminController ..> iAdministracao : requer
+  requer:
+  IRepositorioUsuarios,
+  IRepositorioSolicitacoes,
+  IRepositorioPropostas,
+  IRepositorioAgendamentos,
+  IServicoNotificacao
+end note
 
-solicitacaoService --> solicitacao
-solicitacaoService --> validador
-propostaService --> proposta
-propostaService --> strategy
-agendamentoService --> agendamento
-avaliacaoService --> avaliacao
-adminService --> usuario
-adminService --> categoria
-notificacaoService --> notificacao
+note bottom of repositorios
+  fornece:
+  IRepositorioUsuarios,
+  IRepositorioSolicitacoes,
+  IRepositorioPropostas,
+  IRepositorioAgendamentos
+end note
 
-autenticacaoService ..> iRepoUsuarios : requer
-solicitacaoService ..> iRepoSolicitacoes : requer
-propostaService ..> iRepoPropostas : requer
-agendamentoService ..> iRepoAgendamentos : requer
-adminService ..> iRepoUsuarios : requer
+note bottom of integracaoNotificacao
+  fornece:
+  IServicoNotificacao
+end note
 
-propostaService ..> iNotificacoes : requer
-agendamentoService ..> iNotificacoes : requer
-notificacaoService ..> iServicoNotificacao : requer
+note bottom of dominio
+  O dominio nao depende da infraestrutura.
+end note
 
-authController ..> security
-security --> jwt
-adminController ..> exceptionHandler
-adminController ..> swagger
-swagger ..> configuracao
-
-usuarioRepoImpl - iRepoUsuarios : fornece
-solicitacaoRepoImpl - iRepoSolicitacoes : fornece
-propostaRepoImpl - iRepoPropostas : fornece
-agendamentoRepoImpl - iRepoAgendamentos : fornece
-integracaoNotificacao - iServicoNotificacao : fornece
-
-usuarioRepoImpl --> db
-solicitacaoRepoImpl --> db
-propostaRepoImpl --> db
-agendamentoRepoImpl --> db
-
-legend right
-  Interface ligada ao componente: fornece
-  Dependencia tracejada para interface: requer
-  O dominio nao depende de infraestrutura
+legend bottom
+  Conector bola-soquete: componente da esquerda requer interface fornecida pelo componente da direita.
+  Circulo = interface fornecida; meia-lua = interface requerida.
 endlegend
 @enduml

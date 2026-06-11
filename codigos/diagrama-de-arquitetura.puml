@@ -1,11 +1,13 @@
 @startuml
 ' Fonte do projeto: README.md; docs/documentacao-projeto.md
-' Fonte conceitual: material da disciplina e sintaxe PlantUML local
+' Fonte conceitual: tools/Projeto PlantUML API/plantuml_code/component_diagram.puml
 title Diagrama UML de Componentes - Arquitetura Hexagonal em Monolito Modular
 left to right direction
 skinparam backgroundColor #FFFFFF
 skinparam componentStyle uml2
 skinparam linetype ortho
+skinparam nodesep 70
+skinparam ranksep 80
 skinparam shadowing true
 skinparam defaultFontName Arial
 skinparam package {
@@ -16,104 +18,40 @@ skinparam component {
   BorderColor #F97316
   BackgroundColor #FFF7ED
 }
-skinparam interface {
-  BorderColor #374151
-  BackgroundColor #F9FAFB
-}
 skinparam database {
   BorderColor #2563EB
   BackgroundColor #EFF6FF
 }
 
-component "Interface Web" as web
-
-interface "IAPI REST Nubo" as iApi
-interface "IPersistencia" as iPersistencia
-interface "IRepositorioUsuarios" as iRepoUsuarios
-interface "IRepositorioSolicitacoes" as iRepoSolicitacoes
-interface "IRepositorioPropostas" as iRepoPropostas
-interface "IRepositorioAgendamentos" as iRepoAgendamentos
-interface "IServicoNotificacaoExterna" as iServicoNotificacao
-
-package "API Backend Nubo" as backend {
-  component "Controladores REST" as api
-
-  package "Aplicacao" as aplicacao {
-    component "Modulo de Autenticacao" as autenticacao
-    component "Modulo de Solicitacoes" as solicitacoes
-    component "Modulo de Propostas" as propostas
-    component "Modulo de Agendamentos" as agendamentos
-    component "Modulo de Notificacoes" as notificacoes
-    component "Modulo Administrativo" as admin
-    component "Servicos / Casos de Uso" as casosUso
-  }
-
-  package "Dominio" as dominio {
-    component "Entidades" as entidades
-    component "Regras de Negocio" as regras
-    component "Servicos de Dominio / Politicas" as politicas
-  }
-
-  package "Infraestrutura" as infraestrutura {
-    component "Persistencia" as persistencia
-    component "Seguranca" as seguranca
-    component "Configuracao" as configuracao
-    component "Documentacao da API" as docsApi
-    component "Integracao de Notificacao Externa" as integracaoNotificacao
-  }
+package "Interface / Entrada" {
+  component "Interface Web" as web
 }
 
-database "Banco de Dados PostgreSQL" as db
-component "Servico de Notificacao Externo" as servicoNotificacao
+package "API Backend Nubo" {
+  component "API Backend\nREST\nmonolito modular" as backend
+}
 
-api - iApi : fornece
-web ..> iApi : requer
+package "Infraestrutura" {
+  component "Camada de Persistencia" as persistencia
+}
 
-autenticacao --> casosUso
-solicitacoes --> casosUso
-propostas --> casosUso
-agendamentos --> casosUso
-notificacoes --> casosUso
-admin --> casosUso
+package "Sistemas Externos" {
+  database "Banco de Dados\nPostgreSQL" as db
+  component "Servico de\nNotificacao Externo" as notificacaoExterna
+}
 
-casosUso --> entidades
-casosUso --> regras
-casosUso --> politicas
+web -(0- backend : INuboAPI
+backend -(0- persistencia : IPersistencia
+backend -(0- notificacaoExterna : IServicoNotificacao
+persistencia --> db : dados
 
-persistencia - iPersistencia : fornece
-persistencia - iRepoUsuarios : fornece
-persistencia - iRepoSolicitacoes : fornece
-persistencia - iRepoPropostas : fornece
-persistencia - iRepoAgendamentos : fornece
-
-casosUso ..> iPersistencia : requer
-casosUso ..> iRepoUsuarios : requer
-casosUso ..> iRepoSolicitacoes : requer
-casosUso ..> iRepoPropostas : requer
-casosUso ..> iRepoAgendamentos : requer
-
-servicoNotificacao - iServicoNotificacao : fornece
-integracaoNotificacao ..> iServicoNotificacao : requer
-notificacoes ..> iServicoNotificacao : requer
-
-persistencia --> db
-api ..> seguranca
-api ..> docsApi
-infraestrutura ..> configuracao
-
-note right of api
-  Monolito modular:
-  uma unica aplicacao implantavel,
-  organizada em modulos internos.
+note bottom of backend
+  Internamente organizado pela Arquitetura Hexagonal.
+  O backend permanece uma unica aplicacao implantavel.
 end note
 
-note bottom of dominio
-  A Arquitetura Hexagonal protege o dominio
-  de detalhes tecnicos de infraestrutura.
-end note
-
-legend right
-  Interface ligada ao componente: fornece
-  Dependencia tracejada para interface: requer
+legend bottom
+  Conector bola-soquete: componente da esquerda requer interface fornecida pelo componente da direita.
+  Circulo = interface fornecida; meia-lua = interface requerida.
 endlegend
 @enduml
