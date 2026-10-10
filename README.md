@@ -28,7 +28,7 @@
 
 ## 🚧 Status do Projeto
 
-![Status](https://img.shields.io/badge/status-documenta%C3%A7%C3%A3o%20de%20projeto-blue)
+![Status](https://img.shields.io/badge/status-conclu%C3%ADdo%20%7C%20modelagem-success)
 ![Versão](https://img.shields.io/badge/vers%C3%A3o-1.0-blue)
 ![PlantUML](https://img.shields.io/badge/diagramas-PlantUML-orange)
 ![Arquitetura](https://img.shields.io/badge/arquitetura-hexagonal-green)
@@ -36,7 +36,9 @@
 ![Frontend](https://img.shields.io/badge/frontend-React%20%2B%20TypeScript-61DAFB)
 ![Banco](https://img.shields.io/badge/banco-PostgreSQL-336791)
 
-O projeto está em fase de **modelagem e documentação de software**. As tecnologias listadas representam uma proposta técnica fictícia para uma implementação futura da aplicação.
+Projeto acadêmico **concluído no escopo de modelagem e documentação de software**. A entrega reúne requisitos, contratos de operação, arquitetura e diagramas. O repositório preserva os artefatos finais do trabalho para consulta e estudo.
+
+As tecnologias listadas representam a proposta de uma aplicação futura; não há implementação executável da plataforma neste repositório.
 
 ---
 
