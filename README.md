@@ -49,13 +49,7 @@ O projeto está em fase de **modelagem e documentação de software**. As tecnol
 - [Arquitetura](#-arquitetura)
   - [Diagramas principais](#diagramas-principais)
   - [Fontes PlantUML](#fontes-plantuml)
-- [Instalação e Execução](#-instalação-e-execução)
-  - [Pré-requisitos](#pré-requisitos)
-  - [Variáveis de Ambiente](#-variáveis-de-ambiente)
-  - [Instalação de Dependências](#-instalação-de-dependências)
-  - [Inicialização do Banco de Dados PostgreSQL](#-inicialização-do-banco-de-dados-postgresql)
-  - [Como Executar a Aplicação](#-como-executar-a-aplicação)
-- [Deploy](#-deploy)
+- [Execução dos artefatos](#instalação-e-execução-dos-artefatos)
 - [Estrutura de Pastas](#-estrutura-de-pastas)
 - [Demonstração](#-demonstração)
 - [Testes](#-testes)
@@ -91,6 +85,8 @@ O projeto foi construído no contexto da disciplina **Projeto de Software**, com
 ---
 
 ## ✨ Funcionalidades Principais
+
+Escopo **modelado**, ainda sem implementação funcional neste repositório:
 
 - 🔐 **Cadastro e autenticação:** criação de contas para clientes, prestadores e administradores.
 - 🧾 **Solicitação de serviço:** registro de categoria, endereço, descrição e datas preferenciais.
@@ -155,21 +151,21 @@ As tecnologias abaixo representam a **proposta técnica fictícia** para a aplic
 
 ## 🏗 Arquitetura
 
-O Nubo adota uma arquitetura cliente-servidor com comunicação via API REST. O backend é modelado como um **monólito modular**, ou seja, uma única aplicação implantável organizada em módulos internos, como autenticação, solicitações, propostas, agendamentos, notificações e administração.
+O modelo Nubo prevê uma arquitetura cliente-servidor com comunicação via API REST. O backend é modelado como um **monólito modular**, ou seja, uma única aplicação implantável organizada em módulos internos, como autenticação, solicitações, propostas, agendamentos, notificações e administração.
 
-Internamente, o backend segue a **Arquitetura Hexagonal**, separando responsabilidades em interface, aplicação, domínio e infraestrutura. Essa organização mantém as regras de negócio protegidas de detalhes técnicos, como banco de dados, autenticação, documentação da API e integração com serviços externos de notificação.
+Na proposta, o backend segue a **Arquitetura Hexagonal**, separando responsabilidades em interface, aplicação, domínio e infraestrutura. Essa organização mantém as regras de negócio protegidas de detalhes técnicos, como banco de dados, autenticação, documentação da API e integração com serviços externos de notificação.
 
 A arquitetura foi escolhida considerando a evolução esperada do produto. Os fluxos de solicitação, proposta, seleção, agendamento, cancelamento, conclusão e avaliação tendem a crescer em regras e integrações. Ao isolar o domínio, o sistema pode trocar mecanismos de persistência, adicionar novos canais de entrada e substituir integrações externas sem comprometer o núcleo das regras de negócio.
 
 ### Diagramas principais
 
-| Visão Arquitetural | Componentes do Backend |
-| :---: | :---: |
-| <img src="./imagens/diagrama-de-arquitetura.png" alt="Diagrama UML de Componentes - Arquitetura Hexagonal em Monólito Modular" width="420px"/> | <img src="./imagens/diagrama-de-componentes.png" alt="Diagrama UML de Componentes - Arquitetura Geral do Backend Nubo" width="420px"/> |
-| Pacotes do Backend | Implantação |
-| <img src="./imagens/diagrama-de-pacotes.png" alt="Diagrama UML de Pacotes - Organização dos Módulos do Backend Nubo" width="420px"/> | <img src="./imagens/diagrama-de-implantacao.png" alt="Diagrama UML de Implantação - Distribuição Física do Monólito Modular Nubo" width="420px"/> |
-| Classes de Domínio | Modelo de Dados |
-| <img src="./imagens/diagrama-de-classes.png" alt="Diagrama UML de Classes - Modelo de Domínio do Nubo" width="420px"/> | <img src="./imagens/diagrama-de-modelo-dados.png" alt="Diagrama de Modelo de Dados - Esquema Relacional do Nubo" width="420px"/> |
+|                                                               Visão Arquitetural                                                               |                                                              Componentes do Backend                                                               |
+| :--------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------: |
+| <img src="./imagens/diagrama-de-arquitetura.png" alt="Diagrama UML de Componentes - Arquitetura Hexagonal em Monólito Modular" width="420px"/> |      <img src="./imagens/diagrama-de-componentes.png" alt="Diagrama UML de Componentes - Arquitetura Geral do Backend Nubo" width="420px"/>       |
+|                                                               Pacotes do Backend                                                               |                                                                    Implantação                                                                    |
+|      <img src="./imagens/diagrama-de-pacotes.png" alt="Diagrama UML de Pacotes - Organização dos Módulos do Backend Nubo" width="420px"/>      | <img src="./imagens/diagrama-de-implantacao.png" alt="Diagrama UML de Implantação - Distribuição Física do Monólito Modular Nubo" width="420px"/> |
+|                                                               Classes de Domínio                                                               |                                                                  Modelo de Dados                                                                  |
+|             <img src="./imagens/diagrama-de-classes.png" alt="Diagrama UML de Classes - Modelo de Domínio do Nubo" width="420px"/>             |         <img src="./imagens/diagrama-de-modelo-dados.png" alt="Diagrama de Modelo de Dados - Esquema Relacional do Nubo" width="420px"/>          |
 
 ### Fontes PlantUML
 
@@ -196,105 +192,43 @@ Diagramas comportamentais complementares:
 
 ---
 
-## 🔧 Instalação e Execução
+## Instalação e execução dos artefatos
 
-> [!IMPORTANT]
-> Este repositório contém a documentação e os modelos do projeto. Os comandos abaixo representam uma proposta de execução para uma implementação futura da aplicação.
-
-### Pré-requisitos
-
-- Java JDK 17 ou superior
-- Node.js LTS 18 ou superior
-- npm ou yarn
-- Docker e Docker Compose
-- PostgreSQL 16 ou superior
-- PlantUML, ou `tools/plantuml.jar`
-
-### 🔑 Variáveis de Ambiente
-
-#### 1. Back-end Spring Boot
-
-| Variável | Descrição | Exemplo |
-| :--- | :--- | :--- |
-| `SERVER_PORT` | Porta da API. | `8080` |
-| `SPRING_DATASOURCE_URL` | URL JDBC do PostgreSQL. | `jdbc:postgresql://localhost:5432/nubo` |
-| `SPRING_DATASOURCE_USERNAME` | Usuário do banco. | `postgres` |
-| `SPRING_DATASOURCE_PASSWORD` | Senha do banco. | `senha-segura` |
-| `JWT_SECRET` | Chave para assinatura dos tokens. | `chave-local-de-desenvolvimento` |
-| `NOTIFICATION_API_URL` | URL do serviço externo de notificação. | `https://api.notificacao.local` |
-
-#### 2. Front-end React/Vite
-
-| Variável | Descrição | Exemplo |
-| :--- | :--- | :--- |
-| `VITE_API_URL` | URL base da API. | `http://localhost:8080/api` |
-| `VITE_APP_NAME` | Nome público da aplicação. | `Nubo` |
-
-### 📦 Instalação de Dependências
-
-Estrutura planejada para uma implementação futura:
+Esta entrega contém documentação e modelos, sem frontend React, API Spring Boot, banco de dados ou deploy da aplicação. Essas tecnologias representam a arquitetura proposta; não são dependências para consultar o repositório.
 
 ```bash
-# Front-end
-cd frontend
-npm install
-
-# Back-end
-cd ../backend
-./mvnw clean install
+git clone https://github.com/PHnsilva/nubo-scheduling-system.git
+cd nubo-scheduling-system
 ```
 
-### 💾 Inicialização do Banco de Dados PostgreSQL
+Abra [docs/documentacao-projeto.md](docs/documentacao-projeto.md), [docs/especificacao-requisitos.md](docs/especificacao-requisitos.md) e [imagens/](imagens/) diretamente. As fontes editáveis estão em [codigos/](codigos/).
+
+### Renderização local dos diagramas
+
+Com Java instalado e o JAR versionado em `tools/plantuml.jar`, na raiz:
 
 ```bash
-docker run --name nubo-postgres \
-  -e POSTGRES_USER=postgres \
-  -e POSTGRES_PASSWORD=senha-segura \
-  -e POSTGRES_DB=nubo \
-  -p 5432:5432 \
-  -d postgres:16
+java -jar tools/plantuml.jar -charset UTF-8 -checkonly codigos
+java -jar tools/plantuml.jar -charset UTF-8 -tpng -o ../imagens codigos
 ```
 
-### ⚡ Como Executar a Aplicação
+O primeiro comando verifica a sintaxe sem gerar imagens. O segundo renderiza os diagramas em `imagens/`; o diretório de saída relativo é calculado a partir de `codigos/`, conforme a [documentação da CLI PlantUML](https://plantuml.com/command-line). Alguns tipos de diagrama podem exigir Graphviz disponível no ambiente.
 
-```bash
-# Terminal 1 - Back-end
-cd backend
-./mvnw spring-boot:run
+### Ferramenta de exemplo em Python
 
-# Terminal 2 - Front-end
-cd frontend
-npm run dev
+[tools/Projeto PlantUML API/](<tools/Projeto PlantUML API/>) contém o material de apoio do professor, com exemplos próprios em `plantuml_code/`. Ele não renderiza automaticamente os modelos Nubo de `codigos/`.
+
+Com Python e acesso ao servidor PlantUML, no PowerShell a partir da raiz:
+
+```powershell
+Set-Location 'tools/Projeto PlantUML API'
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+python main.py
 ```
 
-### 🧩 Renderização dos Diagramas PlantUML
-
-```bash
-java -Djava.awt.headless=true -jar tools/plantuml.jar -charset UTF-8 -tpng -o ../imagens codigos/*.puml
-```
-
----
-
-## 🚀 Deploy
-
-O deploy planejado para uma implementação futura considera:
-
-1. **Front-end:** publicação dos arquivos estáticos React/Vite na Vercel.
-2. **Back-end:** execução da API Spring Boot em Render.
-3. **Banco de Dados:** PostgreSQL gerenciado.
-4. **Notificações:** integração com serviço externo dedicado.
-5. **CI/CD:** GitHub Actions para validação, testes, build e publicação.
-
-Variáveis esperadas em produção:
-
-```txt
-VITE_API_URL=https://api.nubo.example.com
-SPRING_DATASOURCE_URL=jdbc:postgresql://host:5432/nubo
-SPRING_DATASOURCE_USERNAME=nubo_admin
-SPRING_DATASOURCE_PASSWORD=<valor-seguro>
-JWT_SECRET=<valor-seguro>
-NOTIFICATION_API_URL=https://notificacoes.example.com
-```
+O cliente desse exemplo envia o código dos diagramas ao servidor configurado. Use a renderização local com o JAR quando não desejar essa transmissão. Não há aplicação Nubo para iniciar, nem variáveis de ambiente ou migrações executáveis nesta entrega.
 
 ---
 
@@ -327,12 +261,12 @@ nubo-scheduling-system/
 
 Como a implementação funcional não faz parte desta entrega, a demonstração ocorre por meio dos modelos e documentos do projeto.
 
-| Artefato | Descrição |
-| :--- | :--- |
-| [Documentação de Projeto](./docs/documentacao-projeto.md) | Consolida modelos de usuário, requisitos, contratos, arquitetura, diagramas e modelo de dados. |
+| Artefato                                                          | Descrição                                                                                                           |
+| :---------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------ |
+| [Documentação de Projeto](./docs/documentacao-projeto.md)         | Consolida modelos de usuário, requisitos, contratos, arquitetura, diagramas e modelo de dados.                      |
 | [Especificação de Requisitos](./docs/especificacao-requisitos.md) | Descreve problema, domínio, visão de domínio, requisitos funcionais, requisitos não funcionais e regras de negócio. |
-| [Diagramas Renderizados](./imagens) | Contém as imagens PNG geradas a partir dos arquivos PlantUML. |
-| [Fontes PlantUML](./codigos) | Contém os modelos editáveis dos diagramas. |
+| [Diagramas Renderizados](./imagens)                               | Contém as imagens PNG geradas a partir dos arquivos PlantUML.                                                       |
+| [Fontes PlantUML](./codigos)                                      | Contém os modelos editáveis dos diagramas.                                                                          |
 
 Fluxos demonstrados nos diagramas:
 
@@ -368,12 +302,13 @@ Não há testes automatizados executáveis nesta entrega, pois o repositório é
 - [Documentação oficial do React](https://react.dev/)
 - [Documentação oficial do PostgreSQL](https://www.postgresql.org/docs/)
 - [Projeto PlantUML API — Prof. Dr. João Paulo Aramuni](https://github.com/joaopauloaramuni/projeto-de-software/tree/main/PROJETOS/Python/Projeto%20PlantUML%20API)
+
 ---
 
 ## 👥 Autores
 
-| 👤 Nome | GitHub | E-mail |
-|---|---|---|
+| 👤 Nome                     | GitHub   | E-mail              |
+| --------------------------- | -------- | ------------------- |
 | Pedro Henrique Silva Vargas | PHnsilva | phnsilva1@gmail.com |
 
 ---
