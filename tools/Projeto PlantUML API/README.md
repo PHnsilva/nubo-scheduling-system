@@ -2,6 +2,12 @@
 
 Este projeto foi desenvolvido para facilitar a interação com a API do PlantUML, permitindo a geração automática de diagramas a partir de código UML. O objetivo é proporcionar uma interface simples para codificação, compactação e requisição de diagramas diretamente a partir de arquivos `.puml`.
 
+## Contexto neste repositório
+
+Material de apoio do Prof. Dr. João Paulo Aramuni, mantido com seus exemplos e créditos. As fontes em `plantuml_code/` são exemplos da ferramenta; os modelos Nubo ficam em `../../codigos/`. Consulte o [README do Nubo](../../README.md#instalação-e-execução-dos-artefatos) para renderizar os diagramas do projeto localmente.
+
+Depois de instalar `requirements.txt`, execute `python main.py` **neste diretório**. O script lê `plantuml_code/` relativamente à pasta atual e grava as imagens em `plantuml_diagrams/`. O cliente envia o código ao servidor PlantUML configurado; a URL padrão no código usa HTTP. Não envie conteúdo privado por esse exemplo.
+
 ## Sobre o PlantUML
 
 O PlantUML é uma ferramenta open-source criada em 2009 com o propósito de gerar diagramas UML de forma programática, utilizando uma linguagem de marcação simples. Ele é amplamente utilizado para diagramas de classes, sequências, casos de uso, entre outros, e é suportado por várias ferramentas de desenvolvimento. O projeto PlantUML utiliza a biblioteca Graphviz para renderização gráfica, sendo uma solução poderosa e flexível para documentação e modelagem de software.
@@ -11,56 +17,56 @@ O PlantUML é uma ferramenta open-source criada em 2009 com o propósito de gera
 ## Capturas de Tela
 
 | <img src="https://joaopauloaramuni.github.io/python-imgs/PlantUML_API/plantuml_diagrams/activity_diagram.png" alt="activity_diagram"/> |
-|:---------------------:|
-| activity_diagram |
+| :------------------------------------------------------------------------------------------------------------------------------------: |
+|                                                            activity_diagram                                                            |
 
 | <img src="https://joaopauloaramuni.github.io/python-imgs/PlantUML_API/plantuml_diagrams/class_diagram.png" alt="class_diagram"/> |
-|:---------------------:|
-| class_diagram |
+| :------------------------------------------------------------------------------------------------------------------------------: |
+|                                                          class_diagram                                                           |
 
 | <img src="https://joaopauloaramuni.github.io/python-imgs/PlantUML_API/plantuml_diagrams/communication_diagram.png" alt="communication_diagram"/> |
-|:---------------------:|
-| communication_diagram |
+| :----------------------------------------------------------------------------------------------------------------------------------------------: |
+|                                                              communication_diagram                                                               |
 
 | <img src="https://joaopauloaramuni.github.io/python-imgs/PlantUML_API/plantuml_diagrams/component_diagram.png" alt="component_diagram"/> |
-|:---------------------:|
-| component_diagram |
+| :--------------------------------------------------------------------------------------------------------------------------------------: |
+|                                                            component_diagram                                                             |
 
 | <img src="https://joaopauloaramuni.github.io/python-imgs/PlantUML_API/plantuml_diagrams/deployment_diagram.png" alt="deployment_diagram"/> |
-|:---------------------:|
-| deployment_diagram |
+| :----------------------------------------------------------------------------------------------------------------------------------------: |
+|                                                             deployment_diagram                                                             |
 
 | <img src="https://joaopauloaramuni.github.io/python-imgs/PlantUML_API/plantuml_diagrams/entity_relationship_diagram.png" alt="entity_relationship_diagram"/> |
-|:---------------------:|
-| entity_relationship_diagram |
+| :----------------------------------------------------------------------------------------------------------------------------------------------------------: |
+|                                                                 entity_relationship_diagram                                                                  |
 
 | <img src="https://joaopauloaramuni.github.io/python-imgs/PlantUML_API/plantuml_diagrams/json_diagram.png" alt="json_diagram"/> |
-|:---------------------:|
-| json_diagram |
+| :----------------------------------------------------------------------------------------------------------------------------: |
+|                                                          json_diagram                                                          |
 
 | <img src="https://joaopauloaramuni.github.io/python-imgs/PlantUML_API/plantuml_diagrams/package_diagram.png" alt="package_diagram"/> |
-|:---------------------:|
-| package_diagram |
+| :----------------------------------------------------------------------------------------------------------------------------------: |
+|                                                           package_diagram                                                            |
 
 | <img src="https://joaopauloaramuni.github.io/python-imgs/PlantUML_API/plantuml_diagrams/sequence_diagram.png" alt="sequence_diagram"/> |
-|:---------------------:|
-| sequence_diagram |
+| :------------------------------------------------------------------------------------------------------------------------------------: |
+|                                                            sequence_diagram                                                            |
 
 | <img src="https://joaopauloaramuni.github.io/python-imgs/PlantUML_API/plantuml_diagrams/state_diagram.png" alt="state_diagram"/> |
-|:---------------------:|
-| state_diagram |
+| :------------------------------------------------------------------------------------------------------------------------------: |
+|                                                          state_diagram                                                           |
 
 | <img src="https://joaopauloaramuni.github.io/python-imgs/PlantUML_API/plantuml_diagrams/use_case_diagram.png" alt="use_case_diagram"/> |
-|:---------------------:|
-| use_case_diagram |
+| :------------------------------------------------------------------------------------------------------------------------------------: |
+|                                                            use_case_diagram                                                            |
 
 | <img src="https://joaopauloaramuni.github.io/python-imgs/PlantUML_API/plantuml_diagrams/wireframe_diagram.png" alt="wireframe_diagram"/> |
-|:---------------------:|
-| wireframe_diagram |
+| :--------------------------------------------------------------------------------------------------------------------------------------: |
+|                                                            wireframe_diagram                                                             |
 
 | <img src="https://joaopauloaramuni.github.io/python-imgs/PlantUML_API/plantuml_diagrams/archimate_diagram.png" alt="archimate_diagram"/> |
-|:---------------------:|
-| archimate_diagram |
+| :--------------------------------------------------------------------------------------------------------------------------------------: |
+|                                                            archimate_diagram                                                             |
 
 ---
 
@@ -140,6 +146,7 @@ As dependências do projeto estão listadas no arquivo `requirements.txt`.
 ### Instalação das Dependências
 
 1. Crie um ambiente virtual:
+
    ```bash
    python -m venv .venv
    ```
@@ -167,6 +174,7 @@ As dependências do projeto estão listadas no arquivo `requirements.txt`.
 - [PlantUML Download](https://plantuml.com/download)
 - [PlantUML API](https://www.plantuml.com/plantuml/uml)
 - [PyPI - Requests](https://pypi.org/project/requests/)
+
 ---
 
 ## Licença
